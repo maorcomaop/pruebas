@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reporte_Consolidado_Empresa_SubReport_1_1" language="groovy" pageWidth="106" pageHeight="752" columnWidth="106" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="COLUMN_COLOR" mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" fill="Solid" radius="0" scaleImage="Clip" hAlign="Left" vAlign="Bottom" rotation="None" isBlankWhenNull="true" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded="false">
+		<pen lineWidth="0.0" lineStyle="Solid"/>
+		<box padding="2">
+			<pen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(((Number)$P{ROW_COUNT}).doubleValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#BBD0DC"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="V_PK" class="java.lang.Integer"/>
+	<parameter name="FECHA" class="java.util.Date"/>
+	<parameter name="ROW_COUNT" class="java.lang.Integer"/>
+	<parameter name="IR_PK" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT IF(sum(cp.DIFERENCIA) >= 0, sum(cp.DIFERENCIA), 0) AS CONTEOS_PERIMETRO
+FROM tbl_conteo_perimetro AS cp WHERE cp.FK_INFORMACION_REGISTRADORA IN (
+	SELECT ir.PK_INFORMACION_REGISTRADORA
+	FROM tbl_informacion_registradora AS ir WHERE
+	ir.FECHA_INGRESO = $P{FECHA} AND
+	ir.FECHA_SALIDA_BASE_SALIDA = $P{FECHA} AND
+	ir.FK_VEHICULO = $P{V_PK}
+)]]>
+	</queryString>
+	<field name="CONTEOS_PERIMETRO" class="java.math.BigDecimal"/>
+	<detail>
+		<band height="18">
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="0" y="0" width="106" height="18"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{CONTEOS_PERIMETRO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

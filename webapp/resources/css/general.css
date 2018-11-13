@@ -1,0 +1,161 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 10-jul-2018, 12:11:08
+    Author     : Richard Mejia
+*/
+
+* {
+    box-sizing: border-box;
+}
+
+h2 {
+    padding-bottom: 1.2em;
+}
+
+.control-group {
+    margin-top: 1.5em;
+}
+
+.control-group > div > [type="submit"] {
+    margin-top: .5em;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+input[type="radio"] + label {
+    color: steelblue;
+    padding: 5px 15px 5px 51px;;
+    display: inline-block;
+    position: relative;
+    font-size: 1.3em;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.4s ease;
+}
+
+input[type="radio"] + label:hover {
+    background: rgba(30, 6, 6, 0.1);
+}
+
+input[type="radio"] + label:before {
+    content: "";
+    width: 17px;
+    height: 17px;
+    display: inline-block;
+    background: none;
+    border: 3px solid steelblue;
+    border-radius: 50%;
+    position: absolute;
+    left: 17px;
+    top: 7px;
+}
+
+input[type="radio"]:checked + label {
+    padding: 5px 15px;
+    background: steelblue;
+    border-radius: 2px;
+    color: #fff;
+}
+
+input[type="radio"]:checked + label:before {
+    display: none;
+}
+
+.lista {
+    list-style: none;
+    margin-left: -3em;
+}
+
+.lista__item {
+    padding-bottom: 1.1em;
+    font-size: 1.5em;
+}
+
+.lista__item__link {
+    transition: all 1s linear;
+}
+
+.lista__item__link:hover {
+    text-decoration: none;
+    padding-left: 1em;
+    transition: all .5s linear;
+}
+
+.respuesta .tituloPregunta {
+    font-size: 1.3em;
+}
+
+/*.respuesta .volverInicio {
+    display: inline-block;
+    float: right;
+    line-height: 2.3em;
+    font-size: 1.2em;
+    margin-right: 2em;
+}*/
+
+.jumbotron {
+    padding-top: 3.5em;
+    padding-bottom: 1em;
+    background: #F7F9FA;
+    border: 1px solid white;
+}
+
+.jumbotron:hover {
+    border: 1px solid steelblue;
+}
+
+.main, .main-aside {
+    -webkit-box-flex: 1;
+    -ms-flex: auto;
+    flex: auto; 
+}
+
+@media screen and (min-width: 640px) {
+    .main, .main-aside {
+        width: 90%; 
+    } 
+}
+
+.main-container {
+    -webkit-box-flex: 1;
+    -ms-flex: auto;
+    margin: -3em 2em 0 2em;
+    padding-top: 1em;
+}
+
+@media screen and (min-width: 640px) {
+    .main-container {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex; 
+    } 
+}
+
+.main-aside {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+@media screen and (min-width: 640px) {
+    .main-aside {
+        width: 10%; 
+    } 
+}
+
+pre {
+    width: 100%;
+    margin-top: 2em;
+    font-family: sans-serif;
+    background: white;
+}
+
+.main-aside a:hover {
+    text-decoration: none;
+}

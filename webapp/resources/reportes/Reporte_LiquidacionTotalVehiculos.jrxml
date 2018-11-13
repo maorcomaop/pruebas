@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reporte_LiquidacionTotalVehiculos" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_TITLE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_LOGO" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\logo.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_SUBTITLE" class="java.lang.String"/>
+	<parameter name="REPORT_ICON" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\icon.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_ICON_TITLE" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\titulo.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_FOOTER" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\footer.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_EMPRESA_NAME" class="java.lang.String"/>
+	<parameter name="REPORT_EMPRESA_NIT" class="java.lang.String"/>
+	<parameter name="FECHA_SOLICITUD_INICIAL" class="java.lang.String"/>
+	<parameter name="FECHA_SOLICITUD_FINAL" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["subreports\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="EMPRESA_PK" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SIMBOLO_MONEDA" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["$"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT DISTINCT lg.PK_LIQUIDACION_GENERAL, v.PK_VEHICULO, v.PLACA, v.NUM_INTERNO, lg.TOTAL_PASAJEROS_LIQUIDADOS, lg.TOTAL_VALOR_VUELTAS, lg.TOTAL_VALOR_DESCUENTOS_PASAJEROS, lg.TOTAL_VALOR_DESCUENTOS_ADICIONAL, concat(u.NOMBRE, " ", u.APELLIDO) AS USUARIO, lg.FK_TARIFA_FIJA AS FK_TARIFA
+FROM tbl_liquidacion_general lg INNER JOIN tbl_vehiculo v ON lg.FK_VEHICULO = v.PK_VEHICULO INNER JOIN tbl_usuario u ON lg.`usuario` = u.PK_USUARIO
+WHERE v.FK_EMPRESA = $P{EMPRESA_PK} AND (lg.FECHA_LIQUIDACION BETWEEN $P{FECHA_SOLICITUD_INICIAL} AND $P{FECHA_SOLICITUD_FINAL})
+AND lg.ESTADO = 1
+
+ORDER BY v.PLACA, lg.FECHA_LIQUIDACION;]]>
+	</queryString>
+	<field name="PK_LIQUIDACION_GENERAL" class="java.lang.Integer"/>
+	<field name="PK_VEHICULO" class="java.lang.Integer"/>
+	<field name="PLACA" class="java.lang.String"/>
+	<field name="NUM_INTERNO" class="java.lang.String"/>
+	<field name="TOTAL_PASAJEROS_LIQUIDADOS" class="java.lang.Integer"/>
+	<field name="TOTAL_VALOR_VUELTAS" class="java.lang.Double"/>
+	<field name="TOTAL_VALOR_DESCUENTOS_PASAJEROS" class="java.lang.Double"/>
+	<field name="TOTAL_VALOR_DESCUENTOS_ADICIONAL" class="java.lang.Double"/>
+	<field name="USUARIO" class="java.lang.String"/>
+	<field name="FK_TARIFA" class="java.lang.Integer"/>
+	<variable name="TOTAL_PASAJEROS" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL_PASAJEROS_LIQUIDADOS}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_VUELTAS" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL_VALOR_VUELTAS}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_DESCUENTOS" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL_VALOR_DESCUENTOS_ADICIONAL}]]></variableExpression>
+	</variable>
+	<variable name="VUELTAS_LIQUIDADAS" class="java.lang.Integer" calculation="Sum"/>
+	<variable name="TOTAL_DESCUENTOS_PASAJEROS" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL_VALOR_DESCUENTOS_PASAJEROS}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_PASAJEROS_REGISTRADOS" class="java.lang.Integer" calculation="Sum"/>
+	<variable name="TOTAL_PASAJEROS_DESCONTADOS" class="java.lang.Integer" calculation="Sum"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="68" splitType="Stretch">
+			<rectangle>
+				<reportElement x="1" y="48" width="751" height="20" backcolor="#00507D"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="0" y="25" width="256" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA["NIT: "+$P{REPORT_EMPRESA_NIT}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="FillFrame">
+				<reportElement x="477" y="3" width="275" height="37"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{REPORT_LOGO}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="0" y="5" width="260" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_EMPRESA_NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="48" width="179" height="20" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Regisdata Transporte Online]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="65" splitType="Stretch">
+			<rectangle>
+				<reportElement x="592" y="2" width="154" height="17" backcolor="#00507D"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="592" y="18" width="154" height="20"/>
+				<graphicElement>
+					<pen lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<textField pattern="HH:mm">
+				<reportElement x="715" y="19" width="30" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="630" y="19" width="52" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="595" y="19" width="34" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="596" y="3" width="141" height="15" forecolor="#FFFFFF"/>
+				<textElement/>
+				<text><![CDATA[Fecha Impresión Reporte]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="684" y="19" width="27" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hora:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="3" y="42" width="570" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_SUBTITLE}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="2" y="62" width="750" height="1"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineColor="#AEAEAE"/>
+				</graphicElement>
+			</line>
+			<image>
+				<reportElement x="2" y="3" width="571" height="40"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{REPORT_ICON_TITLE}]]></imageExpression>
+			</image>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="20" y="11" width="524" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_TITLE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="610" y="41" width="65" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="675" y="41" width="49" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="18">
+			<subreport>
+				<reportElement positionType="Float" x="0" y="1" width="746" height="15"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="NO_INTERNO">
+					<subreportParameterExpression><![CDATA[$F{NUM_INTERNO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SIMBOLO_MONEDA">
+					<subreportParameterExpression><![CDATA[$P{SIMBOLO_MONEDA}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="LIQUIDADOR">
+					<subreportParameterExpression><![CDATA[$F{USUARIO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="FK_LIQUIDACION_GENERAL">
+					<subreportParameterExpression><![CDATA[$F{PK_LIQUIDACION_GENERAL}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="FK_TARIFA">
+					<subreportParameterExpression><![CDATA[$F{FK_TARIFA}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="PLACA_VEHICULO">
+					<subreportParameterExpression><![CDATA[$F{PLACA}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<returnValue subreportVariable="TOTAL_PASAJEROS_REGISTRADOS" toVariable="TOTAL_PASAJEROS_REGISTRADOS"/>
+				<returnValue subreportVariable="TOTAL_PASAJEROS_DESCONTADOS" toVariable="TOTAL_PASAJEROS_DESCONTADOS"/>
+				<returnValue subreportVariable="TOTAL_VUELTAS" toVariable="VUELTAS_LIQUIDADAS" calculation="Sum"/>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "Reporte_LiquidacionTotalVehiculos_SubReport_1.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="95">
+			<textField isStretchWithOverflow="true" pattern="$ #,##0">
+				<reportElement x="547" y="79" width="202" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[new java.text.DecimalFormat($P{SIMBOLO_MONEDA}+" #,##0.00").format(Double.valueOf($V{TOTAL_VUELTAS} - $V{TOTAL_DESCUENTOS} - $V{TOTAL_DESCUENTOS_PASAJEROS}))]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="$ #,##0">
+				<reportElement x="548" y="62" width="202" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new java.text.DecimalFormat($P{SIMBOLO_MONEDA}+" #,##0.00").format(Double.valueOf($V{TOTAL_DESCUENTOS}))]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="402" y="79" width="141" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL LIQUIDACION:]]></text>
+			</staticText>
+			<image scaleImage="FillFrame">
+				<reportElement x="0" y="5" width="752" height="15"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{REPORT_FOOTER}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="402" y="22" width="142" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Bruto :]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="77" width="752" height="1"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineColor="#AEAEAE"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="$ #,##0">
+				<reportElement x="548" y="22" width="202" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new java.text.DecimalFormat($P{SIMBOLO_MONEDA}+" #,##0.00").format(Double.valueOf($V{TOTAL_VUELTAS}))]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="402" y="42" width="142" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Descuentos Pasajeros:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="###0">
+				<reportElement x="117" y="22" width="74" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{TOTAL_PASAJEROS}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="22" width="115" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Pasajeros :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="42" width="115" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vueltas Liquidadas :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="###0">
+				<reportElement x="117" y="42" width="74" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{VUELTAS_LIQUIDADAS}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="402" y="62" width="142" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Descuentos Generales:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="$ #,##0">
+				<reportElement x="548" y="42" width="202" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new java.text.DecimalFormat($P{SIMBOLO_MONEDA}+" #,##0.00").format(Double.valueOf($V{TOTAL_DESCUENTOS_PASAJEROS}))]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="200" y="22" width="117" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pasajeros Registrados:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="###0">
+				<reportElement x="318" y="22" width="74" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{TOTAL_PASAJEROS_REGISTRADOS}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0">
+				<reportElement x="318" y="42" width="74" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{TOTAL_PASAJEROS_DESCONTADOS}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="200" y="42" width="117" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pasajeros Descontados:]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

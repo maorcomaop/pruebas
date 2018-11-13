@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="test" value="true"/>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources">
+		<attributes>
+			<attribute name="test" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="target/generated-sources/annotations">
+		<attributes>
+			<attribute name="ignore_optional_problems" value="true"/>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="m2e-apt" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/commons-beanutils-1.9.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/commons-collections4-4.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/commons-digester3-3.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/commons-fileupload-1.3.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/commons-io-2.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/commons-lang3-3.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/JavaAPIforKml-2.2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/java-json.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/javax.mail.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/jdom-2.0.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/jstl-api.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/jstl-impl.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/pdfbox-app-2.0.8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/poi-3.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/preflight-2.0.8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/recaptcha4j-0.0.7.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/simple-java-mail-4.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/slf4j-api-1.7.21.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/javax.servlet.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/antlr-2.7.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/asm.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/commons-beanutils-1.7.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/commons-collections-3.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/commons-digester-1.8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/commons-logging-1.0.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/commons-logging-api-1.0.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/DynamicJasper-3.0.13.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/DynamicJasper-3.0.13-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/DynamicJasper-3.0.13-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/DynamicJasper-3.0.13-tests.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/DynamicJasper-3.0.13-test-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/font1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/groovy-1.8.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/iText-2.1.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/iText-2.1.7.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/iText-5.0.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/jakarta-poi-2.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/jasperreports-4.0.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/jasperreports-5.1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/jasperreports-5.2.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/jasperreports-6.3.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/jasperreports-applet-5.5.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/jasperreports-chart-customizers-6.3.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/jasperreports-chart-themes-6.3.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/jasperreports-fonts-4.0.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/jasperreports-fonts-6.3.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/jasperreports-functions-6.3.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/jasperreports-javaflow-6.3.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/JAXP_142.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/jdtcore-3.1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/junit-4.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/lider_desarrollo/Documents/spring/regisdata/projectResources/reportes/poi-3.6.jar"/>
+	<classpathentry kind="src" output="target/test-classes" path="target/generated-test-sources/test-annotations">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="ignore_optional_problems" value="true"/>
+			<attribute name="m2e-apt" value="true"/>
+			<attribute name="test" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

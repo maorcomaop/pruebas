@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RporteVehiculosXAlarma" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="26"/>
+	<property name="ireport.y" value="59"/>
+	<parameter name="REPORT_TITLE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_LOGO" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\logo.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_SUBTITLE" class="java.lang.String"/>
+	<parameter name="REPORT_ICON" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\icon.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_ICON_TITLE" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\titulo.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_FOOTER" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\footer.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_EMPRESA_NAME" class="java.lang.String"/>
+	<parameter name="REPORT_EMPRESA_NIT" class="java.lang.String"/>
+	<parameter name="FECHA_INICIAL" class="java.util.Date"/>
+	<parameter name="FECHA_FINAL" class="java.util.Date"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["subreportes\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="VEHICULO_PK" class="java.lang.Integer"/>
+	<parameter name="FECHA_IMPRESION" class="java.lang.String"/>
+	<parameter name="LISTA_ALARMAS_PK" class="java.util.List"/>
+	<queryString>
+		<![CDATA[SELECT
+ PK_ALARMA,
+ CODIGO_ALARMA,
+ NOMBRE AS NOMBRE_ALARMA,
+ UNIDAD_MEDICION
+FROM tbl_alarma a INNER JOIN
+tbl_alarma_info_regis air ON
+ a.PK_ALARMA = air.FK_ALARMA
+WHERE air.FECHA_ALARMA BETWEEN $P{FECHA_INICIAL} AND $P{FECHA_FINAL}
+AND $X{IN, a.PK_ALARMA, LISTA_ALARMAS_PK}
+AND a.ESTADO = 1
+GROUP BY a.PK_ALARMA ORDER BY pk_alarma asc;]]>
+	</queryString>
+	<field name="NOMBRE_ALARMA" class="java.lang.String"/>
+	<field name="CODIGO_ALARMA" class="java.lang.Integer"/>
+	<field name="UNIDAD_MEDICION" class="java.lang.String"/>
+	<field name="PK_ALARMA" class="java.lang.Integer"/>
+	<variable name="SUMA_TOTAL_ALM" class="java.lang.Integer" calculation="Sum"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="85" splitType="Stretch">
+			<rectangle>
+				<reportElement x="1" y="62" width="572" height="20" backcolor="#00507D"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="0" y="25" width="256" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_EMPRESA_NIT}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="297" y="2" width="275" height="58"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{REPORT_LOGO}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="0" y="5" width="260" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_EMPRESA_NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="62" width="179" height="20" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Regisdata Transporte Online]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="69" splitType="Stretch">
+			<rectangle>
+				<reportElement x="405" y="3" width="164" height="17" backcolor="#00507D"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="405" y="19" width="164" height="20"/>
+				<graphicElement>
+					<pen lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="409" y="4" width="134" height="15" forecolor="#FFFFFF"/>
+				<textElement/>
+				<text><![CDATA[Fecha Impresión Reporte]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="3" y="42" width="561" height="20"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_SUBTITLE}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="-2" y="62" width="572" height="1"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineColor="#AEAEAE"/>
+				</graphicElement>
+			</line>
+			<image>
+				<reportElement x="1" y="2" width="390" height="40"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{REPORT_ICON_TITLE}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="12" y="4" width="368" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_TITLE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="409" y="19" width="155" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{FECHA_IMPRESION}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="3" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="63">
+			<subreport>
+				<reportElement x="113" y="31" width="358" height="15"/>
+				<subreportParameter name="FECHA_FINAL">
+					<subreportParameterExpression><![CDATA[$P{FECHA_FINAL}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ALARMA_PK">
+					<subreportParameterExpression><![CDATA[$F{PK_ALARMA}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="FECHA_INICIAL">
+					<subreportParameterExpression><![CDATA[$P{FECHA_INICIAL}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<returnValue subreportVariable="TOTAL_ALARMAS" toVariable="SUMA_TOTAL_ALM" calculation="Sum"/>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "subreporte_VehiculosXAlarma.jasper"]]></subreportExpression>
+			</subreport>
+			<rectangle>
+				<reportElement x="321" y="7" width="96" height="15" backcolor="#00507D"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="114" y="7" width="46" height="15" backcolor="#00507D"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="114" y="7" width="46" height="15" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Alarma]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="162" y="7" width="155" height="15" forecolor="#000000"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{CODIGO_ALARMA} +" - "+ $F{NOMBRE_ALARMA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="321" y="7" width="96" height="15" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Unidad de Medición]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="420" y="7" width="99" height="15" forecolor="#000000"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{UNIDAD_MEDICION}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="38" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement x="518" y="14" width="49" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="0" y="4" width="572" height="8"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{REPORT_FOOTER}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="449" y="14" width="65" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="41">
+			<rectangle>
+				<reportElement x="362" y="22" width="210" height="13" backcolor="#00507D"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="362" y="22" width="90" height="13" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Alarmas]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="452" y="22" width="120" height="13" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{SUMA_TOTAL_ALM}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

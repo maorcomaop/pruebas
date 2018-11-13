@@ -1,0 +1,60 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.registel.rdw.logica;
+
+/**
+ *
+ * @author lider_desarrollador
+ */
+public enum SelectC {
+    LST_PAIS,
+    LST_DPTO,
+    LST_CIUDAD,
+    LST_PERFIL,
+    LST_CONDUCTOR,
+    LST_CONDUCTOR_ACTIVO,
+    LST_ALARMA,
+    LST_EVENTO,
+    LST_MOVIL,
+    LST_EMPRESA,
+    LST_GEMPRESA,
+    LST_USUARIO,
+    LST_BASE,
+    LST_BASE_PR,
+    LST_PUNTO,
+    LST_PUNTOBASE,
+    LST_RUTA,
+    LST_RUTAS,
+    LST_PUNTORUTA,
+    LST_PUNTORUTA_COMPLETA,
+    LST_PUNTORUTA_CRUZADA,
+    LST_BASERUTA,
+    LST_TARIFA,
+    LST_MOTIVO,
+    LST_MODULO,
+    LST_ITEMS_SUBMODULO,
+    LST_SUBMODULO,
+    LST_RELACION_VEHICULO_CONDUCTOR,
+    LST_RELACION_VEHICULO_EMPRESA,
+    LST_GRUPO_MOVILES,
+    LST_CATEGORIAS,
+    LST_TIPODOCUMENTO,
+    LST_PUNTORUTA_DESPACHO,
+    LST_GRUPOMOVILES_DESPACHO,
+    LST_DESPACHO,
+    LST_INTERVALO_DESPACHO,
+    LST_INTERVALO_DESPACHO_MANUAL,
+    LST_RUTA_DESPACHO,
+    LST_DIA_FESTIVO,
+    LST_PGRUTA,
+    LST_PGRUTA_COMPLETA,
+    LST_PGRUTA_NOMBRE,
+    PROGRAMACION_RUTA_ACTIVA,
+    LST_MONEDA,
+    LST_ZONAHORARIA,
+    LST_VUELTA_CERRADA,
+    LST_SERVIDOR_IMPRESION
+}

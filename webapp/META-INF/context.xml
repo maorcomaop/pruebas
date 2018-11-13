@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/RDW1" docBase="RDW1"> 
+    <Resource auth="Container" 
+              driverClassName="com.mysql.jdbc.Driver" 
+              logAbandoned="true" maxActive="100" maxIdle="30" maxWait="10000" 
+              name="jdbc/rdw" 
+              removeAbandoned="true" removeAbandonedTimeout="60" 
+              type="javax.sql.DataSource"
+              url="jdbc:mysql://localhost:3306/bd_coomotorneiva_rdtow_sinruta?autoReconnect=true"
+              username="root" 
+              password="diseno&amp;desarrollo"
+    />
+    <!--
+    <Parameter name="user" value="root" />
+    <Parameter name="pass" value="diseno&amp;desarrollo" />
+    <Parameter name="url"  value="jdbc:mysql://localhost:3306/bd_transporte205_rdtow?autoReconnect=true" />
+    <Parameter name="url"  value="jdbc:mysql://localhost:3306/bd_coomotorneiva_rdtow?autoReconnect=true" />
+    <Parameter name="url"  value="jdbc:mysql://localhost:3306/bd_coomotorneiva_rdtow_sinruta?autoReconnect=true" />
+    url="jdbc:mysql://localhost:3306/bd_coomotorneiva_rdtow_sinruta?autoReconnect=true"
+    url="jdbc:mysql://localhost:3306/bd_expresofusacatan_rdtow?autoReconnect=true"
+    url="jdbc:mysql://localhost:3306/bd_montebello_rdtow?autoReconnect=true"
+    url="jdbc:mysql://localhost:3306/bd_fusacatan_rdw?autoReconnect=true"
+    url="jdbc:mysql://localhost:3306/bd_expresofusacatan_rdtow?autoReconnect=true" -->
+</Context>
+<!-- url="jdbc:mysql://localhost:3306/rdw_bd?autoReconnect=true" -->
+<!-- url="jdbc:mysql://localhost:3306/bd_coomotorneiva_rdtow_sinruta?autoReconnect=true" -->
+<!--    
+    bd_coomotorneiva_rdtow_web
+    bd_coomotorneiva_rdtow
+    bd_autobusesneiva_rdtow
+    bd_cootranshuilaneiva_rdtow
+    bd_cootransneivaneiva_rdtow
+    bd_flotahuilaneiva_rdtow
+-->

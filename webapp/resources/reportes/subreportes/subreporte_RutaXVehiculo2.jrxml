@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reporte_Ruta_SubReport_1" pageWidth="437" pageHeight="752" columnWidth="437" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="2.662000000000002"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="COLUMN_COLOR" forecolor="#000000" backcolor="#BBD0DC" fill="Solid" radius="0" scaleImage="Clip">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#BBD0DC" fill="Solid"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="ICON_CHECK" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ICON_UNCHECK" class="java.lang.String"/>
+	<parameter name="FECHA_INICIAL" class="java.util.Date"/>
+	<parameter name="IR_PK" class="java.lang.Integer"/>
+	<parameter name="RUTA_PK" class="java.lang.Integer"/>
+	<parameter name="HORA_SALIDA" class="java.sql.Time"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="idPunto" class="java.lang.Integer"/>
+	<field name="puntoControl" class="java.lang.String"/>
+	<field name="numeracion" class="java.lang.Integer"/>
+	<field name="horaPlanificada" class="java.sql.Time"/>
+	<field name="horaRealLlegada" class="java.sql.Time"/>
+	<field name="minutosHolgura" class="java.lang.Integer"/>
+	<field name="diferenciaTiempo" class="java.sql.Time"/>
+	<field name="llegadaEnHolgura" class="java.lang.Boolean"/>
+	<field name="ruta" class="java.lang.String"/>
+	<field name="estado" class="java.lang.Integer"/>
+	<detail>
+		<band height="18">
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="111" y="0" width="55" height="18" backcolor="#BBD0DC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[($F{idPunto} != -3)
+    ? ($F{numeracion} >= 0)
+        ? "" + $F{numeracion}
+        : "0"
+    : "-"]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement style="COLUMN_COLOR" x="166" y="0" width="55" height="18" backcolor="#BBD0DC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[($F{idPunto} != -3)
+    ? "" + $F{horaPlanificada}
+    : "-"]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement style="COLUMN_COLOR" x="221" y="0" width="55" height="18" backcolor="#BBD0DC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[($F{idPunto} != -3)
+    ? "" + $F{horaRealLlegada}
+    : "-"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="276" y="0" width="39" height="18" backcolor="#BBD0DC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[($F{idPunto} != -3)
+    ? "" + $F{minutosHolgura}
+    : "-"]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement style="COLUMN_COLOR" x="315" y="0" width="52" height="18" backcolor="#BBD0DC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[($F{idPunto} != -3) ?
+    ($F{estado} == 0) ?  "" + $F{diferenciaTiempo} :
+    ($F{estado} == 1) ? "+" + $F{diferenciaTiempo} :
+                        "-" + $F{diferenciaTiempo}
+    : "-"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="0" y="0" width="111" height="18" backcolor="#BBD0DC"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $F{puntoControl}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" mode="Opaque" x="367" y="0" width="70" height="18" backcolor="#CCCCCC">
+					<printWhenExpression><![CDATA[($F{idPunto} == -3) ? true : false]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["-"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" mode="Opaque" x="367" y="0" width="70" height="18" backcolor="#99FF99">
+					<printWhenExpression><![CDATA[($F{idPunto} != -3 && $F{estado} == 0) ? true : false]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["A tiempo"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" mode="Opaque" x="367" y="0" width="70" height="18" backcolor="#FF6666">
+					<printWhenExpression><![CDATA[($F{idPunto} != -3 && $F{estado} == 1) ? true : false]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Atrasado"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" mode="Opaque" x="367" y="0" width="70" height="18" backcolor="#FFCC66">
+					<printWhenExpression><![CDATA[($F{idPunto} != -3 && $F{estado} == 2) ? true : false]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Adelantado"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

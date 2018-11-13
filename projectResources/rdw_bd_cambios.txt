@@ -1,0 +1,89 @@
+
+================================
+COMANDOS
+================================
+
+Serv: 74.208.79.242
+Pass: s_r
+
+Tomcat manager
+usr: admin
+pass: 1234
+
+pscp
+> pscp <file> soporte_registel@74.208.79.242:
+// copiar file en directorio local
+
+$ mysq -u <usuario> -h <localhost> -p
+// conexion a mysql con contraseña
+
+$ cd $CATALINA_HOME
+$ echo $CATALINA_HOME
+
+================================
+PASO DE DATOS (PARA INICIO DE RD) SIN EXITO
+================================
+
+-- verificar existencia de datos en las tablas
+insert into rdw_bd.tbl_perfil select * from bd_coomotorneiva_rdtow.tbl_perfil;
+insert into rdw_bd.tbl_grupo select * from bd_coomotorneiva_rdtow.tbl_grupo;
+insert into rdw_bd.tbl_acceso select * from bd_coomotorneiva_rdtow.tbl_acceso;
+insert into rdw_bd.tbl_acceso_perfil select * from bd_coomotorneiva_rdtow.tbl_acceso_perfil;
+
+insert into tbl_punto 
+(PK_PUNTO, NOMBRE, DESCRIPCION, CODIGO_PUNTO, ESTADO, MODIFICACION_LOCAL)
+VALUES 
+(100, 'Base llegada', 'Base llegada', 100, 0, 1), 
+(101, 'Base salida', 'Base salida', 101, 0, 1);
+
+=================================================
+CAMBIOS A BASE DE DATOS RDW_BD / COOMOTOR (HECTOR)
+=================================================
+
+alter table tbl_punto
+modify LATITUD varchar(50) NULL;
+
+alter table tbl_punto
+modify LONGITUD varchar(50) NULL;
+
+alter table tbl_punto
+add column LATITUD_WEB VARCHAR(50) NULL after LONGITUD;
+	
+alter table tbl_punto
+add column LONGITUD_WEB VARCHAR(50) NULL after LATITUD_WEB;
+
+alter table tbl_auditoria_punto
+modify LATITUD_OLD varchar(50) NULL;
+
+alter table tbl_auditoria_punto
+modify LONGITUD_OLD varchar(50) NULL;
+
+alter table tbl_auditoria_punto
+modify LATITUD_NEW varchar(50) NULL;
+
+alter table tbl_auditoria_punto
+modify LONGITUD_NEW varchar(50) NULL;
+
+alter table tbl_base
+modify LATITUD varchar(50) NULL;
+
+alter table tbl_base
+modify LONGITUD varchar(50) NULL;
+	
+alter table tbl_base
+add column LATITUD_WEB VARCHAR(50) NULL after LONGITUD;
+	
+alter table tbl_base
+add column LONGITUD_WEB VARCHAR(50) NULL after LATITUD_WEB;
+	
+alter table tbl_usuario
+add column TOKEN VARCHAR(64) NULL after TIPO;
+
+alter table tbl_usuario
+add column EXPIRE_TOKEN BIGINT(20) NULL DEFAULT 0 after TOKEN;
+
+alter table tbl_auditoria_usuario
+modify EMAIL_OLD varchar(50) NULL;
+
+alter table tbl_auditoria_usuario
+modify EMAIL_NEW varchar(50) NULL;

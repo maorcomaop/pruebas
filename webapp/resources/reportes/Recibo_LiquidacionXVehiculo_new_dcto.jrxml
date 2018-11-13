@@ -1,0 +1,870 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Recibo_LiquidacionXVehiculo" pageWidth="212" pageHeight="311" columnWidth="192" leftMargin="10" rightMargin="10" topMargin="9" bottomMargin="0" isIgnorePagination="true">
+	<property name="ireport.zoom" value="1.8660295208389333"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="96"/>
+	<style name="table" fontName="Monospaced">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+			<topPen lineWidth="0.0"/>
+			<leftPen lineWidth="0.0"/>
+			<bottomPen lineWidth="0.0"/>
+			<rightPen lineWidth="0.0"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF" fontName="Monospaced">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF" fontName="Monospaced">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF" fill="Solid" fontName="Monospaced">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.0"/>
+			<leftPen lineWidth="0.0" lineStyle="Solid"/>
+			<bottomPen lineWidth="0.0"/>
+			<rightPen lineWidth="0.0"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Dataset_liquidacion_adicional" whenResourceMissingType="Empty">
+		<parameter name="FK_LIQUIDACION_GENERAL" class="java.lang.Integer">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<parameter name="SIMBOLO_MONEDA" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[SELECT
+	CONCAT (cd.NOMBRE, ' - ', la.MOTIVO_DESCUENTO) as NOMBRE_CATEGORIA,
+	la.VALOR_DESCUENTO,
+	CASE
+		WHEN cd.DESCUENTA_PASAJEROS = 1 THEN la.CANTIDAD_PASAJEROS_DESCONTADOS
+		ELSE '-'
+	END AS CANTIDAD_PASAJEROS_DESCONTADOS
+FROM
+tbl_liquidacion_general as lg INNER JOIN tbl_liquidacion_adicional as la ON lg.PK_LIQUIDACION_GENERAL = la.FK_LIQUIDACION_GENERAL INNER JOIN tbl_categoria_descuento as cd ON cd.PK_CATEGORIAS_DESCUENTOS = la.FK_CATEGORIAS
+
+WHERE (la.FK_LIQUIDACION_GENERAL = $P{FK_LIQUIDACION_GENERAL}) and (cd.APLICA_DESCUENTO = 1);]]>
+		</queryString>
+		<field name="NOMBRE_CATEGORIA" class="java.lang.String"/>
+		<field name="VALOR_DESCUENTO" class="java.lang.Double"/>
+		<field name="CANTIDAD_PASAJEROS_DESCONTADOS" class="java.lang.String"/>
+	</subDataset>
+	<subDataset name="Dataset_liquidacion_adicional_1" whenResourceMissingType="Empty">
+		<parameter name="FK_LIQUIDACION_GENERAL" class="java.lang.Integer">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<parameter name="SIMBOLO_MONEDA" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[SELECT
+	CONCAT (cd.NOMBRE, ' - ', la.MOTIVO_DESCUENTO) as NOMBRE_CATEGORIA,
+	IF(cd.ES_PORCENTAJE = 1, CONCAT (cd.VALOR, '','%'), '') as PORCENTAJE,
+	la.VALOR_DESCUENTO, (SELECT IF (SUM(la.VALOR_DESCUENTO) > 0, SUM(la.VALOR_DESCUENTO), 0) FROM tbl_categoria_descuento AS cd INNER JOIN tbl_liquidacion_adicional AS la ON cd.PK_CATEGORIAS_DESCUENTOS = la.FK_CATEGORIAS WHERE (la.FK_LIQUIDACION_GENERAL = $P{FK_LIQUIDACION_GENERAL}) and (cd.APLICA_GENERAL=1)) AS TOTAL_VALOR_NO_DESCUENTOS
+FROM
+tbl_liquidacion_general as lg INNER JOIN tbl_liquidacion_adicional as la ON lg.PK_LIQUIDACION_GENERAL = la.FK_LIQUIDACION_GENERAL INNER JOIN tbl_categoria_descuento as cd ON cd.PK_CATEGORIAS_DESCUENTOS = la.FK_CATEGORIAS
+
+WHERE (la.FK_LIQUIDACION_GENERAL = $P{FK_LIQUIDACION_GENERAL}) and (cd.APLICA_GENERAL = 1)]]>
+		</queryString>
+		<field name="NOMBRE_CATEGORIA" class="java.lang.String"/>
+		<field name="PORCENTAJE" class="java.lang.String"/>
+		<field name="VALOR_DESCUENTO" class="java.lang.Double"/>
+		<field name="TOTAL_VALOR_NO_DESCUENTOS" class="java.lang.Double"/>
+	</subDataset>
+	<subDataset name="Dataset_liquidacion_adicional_2" whenResourceMissingType="Empty">
+		<parameter name="FK_LIQUIDACION_GENERAL" class="java.lang.Integer">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<parameter name="SIMBOLO_MONEDA" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[SELECT CONCAT (cd.NOMBRE, ' - ', la.MOTIVO_DESCUENTO) as NOMBRE_CATEGORIA,
+IF(cd.ES_PORCENTAJE = 1, CONCAT (cd.VALOR, '','%'), '') as PORCENTAJE,
+la.VALOR_DESCUENTO,
+(SELECT IF (SUM(la.VALOR_DESCUENTO) > 0, SUM(la.VALOR_DESCUENTO), 0) FROM tbl_categoria_descuento AS cd INNER JOIN tbl_liquidacion_adicional AS la ON cd.PK_CATEGORIAS_DESCUENTOS = la.FK_CATEGORIAS WHERE (la.FK_LIQUIDACION_GENERAL = $P{FK_LIQUIDACION_GENERAL}) and (cd.APLICA_GENERAL=1)) AS TOTAL_VALOR_DESCUENTOS_AL_NETO
+FROM tbl_liquidacion_general as lg INNER JOIN tbl_liquidacion_adicional as la ON lg.PK_LIQUIDACION_GENERAL = la.FK_LIQUIDACION_GENERAL INNER JOIN tbl_categoria_descuento as cd ON cd.PK_CATEGORIAS_DESCUENTOS = la.FK_CATEGORIAS
+
+WHERE (la.FK_LIQUIDACION_GENERAL = $P{FK_LIQUIDACION_GENERAL}) AND (cd.DESCUENTA_DEL_TOTAL = 1)]]>
+		</queryString>
+		<field name="NOMBRE_CATEGORIA" class="java.lang.String"/>
+		<field name="PORCENTAJE" class="java.lang.String"/>
+		<field name="VALOR_DESCUENTO" class="java.lang.Double"/>
+		<field name="TOTAL_VALOR_DESCUENTOS_AL_NETO" class="java.lang.Double"/>
+	</subDataset>
+	<parameter name="REPORT_TITLE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_LOGO" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\logo.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_SUBTITLE" class="java.lang.String"/>
+	<parameter name="REPORT_ICON" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\icon.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_ICON_TITLE" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\titulo.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_FOOTER" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\footer.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_EMPRESA_NAME" class="java.lang.String"/>
+	<parameter name="REPORT_EMPRESA_NIT" class="java.lang.String"/>
+	<parameter name="PK_LIQUIDACION" class="java.lang.String"/>
+	<parameter name="SIMBOLO_MONEDA" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["$"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ETIQUETA1" class="java.lang.String"/>
+	<parameter name="ETIQUETA2" class="java.lang.String"/>
+	<parameter name="ETIQUETA3" class="java.lang.String"/>
+	<parameter name="ETIQUETA4" class="java.lang.String"/>
+	<parameter name="ETIQUETA5" class="java.lang.String"/>
+	<parameter name="ETIQUETA6" class="java.lang.String"/>
+	<parameter name="ETIQUETA7" class="java.lang.String"/>
+	<parameter name="ETIQUETA8" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+lg.PK_LIQUIDACION_GENERAL,
+lg.ESTADO,
+concat (tu.NOMBRE, " ", tu.APELLIDO) AS LIQUIDADOR,
+concat (tc.NOMBRE, " ", tc.APELLIDO) AS CONDUCTOR,
+tc.CEDULA AS CEDULA,
+tv.PLACA,
+tv.NUM_INTERNO,
+lg.TOTAL_PASAJEROS_LIQUIDADOS,
+lg.TOTAL_VALOR_VUELTAS,
+lg.TOTAL_VALOR_DESCUENTOS_PASAJEROS,
+lg.TOTAL_VALOR_DESCUENTOS_ADICIONAL,
+lg.DISTANCIA_RECORRIDA,
+lg.IPK,
+(SELECT IF (SUM(la.VALOR_DESCUENTO) > 0, SUM(la.VALOR_DESCUENTO), 0) FROM tbl_categoria_descuento AS cd INNER JOIN tbl_liquidacion_adicional AS la ON cd.PK_CATEGORIAS_DESCUENTOS = la.FK_CATEGORIAS WHERE (la.FK_LIQUIDACION_GENERAL = $P{PK_LIQUIDACION}) and (cd.APLICA_GENERAL=1)) AS TOTAL_VALOR_NO_DESCUENTOS,
+(SELECT IF (SUM(la.VALOR_DESCUENTO) > 0, SUM(la.VALOR_DESCUENTO), 0) FROM tbl_categoria_descuento AS cd INNER JOIN tbl_liquidacion_adicional AS la ON cd.PK_CATEGORIAS_DESCUENTOS = la.FK_CATEGORIAS WHERE (la.FK_LIQUIDACION_GENERAL = $P{PK_LIQUIDACION}) and (cd.DESCUENTA_DEL_TOTAL=1)) AS TOTAL_VALOR_DESCUENTOS_AL_NETO,
+tf.VALOR_TARIFA,
+(SELECT SUM(CANTIDAD_PASAJEROS_DESCONTADOS) FROM tbl_liquidacion_adicional as la WHERE la.FK_LIQUIDACION_GENERAL = $P{PK_LIQUIDACION}) AS PASAJEROS_DESCONTADOS,
+lg.FECHA_LIQUIDACION,
+(SELECT COUNT(PK_LIQUIDACION_VUELTAS) FROM tbl_liquidacion_vueltas lv WHERE lv.FK_LIQUIDACION_GENERAL = $P{PK_LIQUIDACION}) AS CANTIDAD_VUELTAS_LIQUIDADAS,
+(SELECT IF(MOTIVO_DESCUENTO <> NULL, GROUP_CONCAT(MOTIVO_DESCUENTO, ' : ', PASAJEROS_DESCUENTO  SEPARATOR '\n'), "")  FROM tbl_liquidacion_vueltas lv WHERE lv.FK_LIQUIDACION_GENERAL = $P{PK_LIQUIDACION}) AS OBSERVACIONES_VUELTAS,
+lg.PK_UNICA,
+lg.FECHA_INICIO_LIQUIDACION,
+lg.FECHA_FIN_LIQUIDACION
+FROM tbl_liquidacion_general lg INNER JOIN tbl_tarifa_fija tf ON tf.PK_TARIFA_FIJA = lg.FK_TARIFA_FIJA
+INNER JOIN tbl_conductor tc ON tc.PK_CONDUCTOR = lg.FK_CONDUCTOR
+INNER JOIN tbl_usuario tu ON tu.PK_USUARIO = lg.USUARIO
+INNER JOIN tbl_vehiculo tv ON tv.PK_VEHICULO = lg.FK_VEHICULO
+WHERE lg.PK_LIQUIDACION_GENERAL = $P{PK_LIQUIDACION}]]>
+	</queryString>
+	<field name="PK_LIQUIDACION_GENERAL" class="java.lang.Integer"/>
+	<field name="ESTADO" class="java.lang.Integer"/>
+	<field name="LIQUIDADOR" class="java.lang.String"/>
+	<field name="CONDUCTOR" class="java.lang.String"/>
+	<field name="CEDULA" class="java.lang.String"/>
+	<field name="PLACA" class="java.lang.String"/>
+	<field name="NUM_INTERNO" class="java.lang.String"/>
+	<field name="TOTAL_PASAJEROS_LIQUIDADOS" class="java.lang.Integer"/>
+	<field name="TOTAL_VALOR_VUELTAS" class="java.lang.Double"/>
+	<field name="TOTAL_VALOR_DESCUENTOS_PASAJEROS" class="java.lang.Double"/>
+	<field name="TOTAL_VALOR_DESCUENTOS_ADICIONAL" class="java.lang.Double"/>
+	<field name="DISTANCIA_RECORRIDA" class="java.lang.Integer"/>
+	<field name="IPK" class="java.lang.Double"/>
+	<field name="TOTAL_VALOR_NO_DESCUENTOS" class="java.lang.Double"/>
+	<field name="TOTAL_VALOR_DESCUENTOS_AL_NETO" class="java.lang.Double"/>
+	<field name="VALOR_TARIFA" class="java.lang.Double"/>
+	<field name="PASAJEROS_DESCONTADOS" class="java.lang.Integer"/>
+	<field name="FECHA_LIQUIDACION" class="java.sql.Timestamp"/>
+	<field name="CANTIDAD_VUELTAS_LIQUIDADAS" class="java.lang.Long"/>
+	<field name="OBSERVACIONES_VUELTAS" class="java.lang.String"/>
+	<field name="PK_UNICA" class="java.lang.String"/>
+	<field name="FECHA_FIN_LIQUIDACION" class="java.lang.String"/>
+	<field name="FECHA_INICIO_LIQUIDACION" class="java.lang.String"/>
+	<variable name="TOTAL_PASAJEROS" class="java.lang.Integer" calculation="Sum"/>
+	<variable name="TOTAL_PASAJEROS_DESCUENTOS" class="java.lang.Integer"/>
+	<background>
+		<band height="212">
+			<textField>
+				<reportElement x="0" y="16" width="192" height="20" forecolor="#E2E2E2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ESTADO} == 0?"ANULADO": ""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="54" width="192" height="20" forecolor="#E2E2E2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ESTADO} == 0?"ANULADO": ""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="96" width="192" height="20" forecolor="#E2E2E2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ESTADO} == 0?"ANULADO": ""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="142" width="192" height="20" forecolor="#E2E2E2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ESTADO} == 0?"ANULADO": ""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="184" width="192" height="20" forecolor="#E2E2E2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ESTADO} == 0?"ANULADO": ""]]></textFieldExpression>
+			</textField>
+		</band>
+	</background>
+	<title>
+		<band height="203">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="24" width="192" height="12" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["NIT: "+$P{REPORT_EMPRESA_NIT}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="13" width="192" height="12" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_EMPRESA_NAME}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="192" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RECIBO DE LIQUIDACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="53" width="65" height="12" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA/HORA    :]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement stretchType="RelativeToBandHeight" x="71" y="53" width="40" height="12" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{FECHA_LIQUIDACION}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="HH:mm:ss" isBlankWhenNull="false">
+				<reportElement x="114" y="53" width="40" height="12" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{FECHA_LIQUIDACION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="71" y="77" width="121" height="12" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{CONDUCTOR}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="65" width="65" height="12" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[LIQUIDADOR     :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="71" y="65" width="121" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{LIQUIDADOR}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="71" y="89" width="84" height="12" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{PLACA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="89" width="65" height="12" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[PLACA               :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="71" y="101" width="85" height="12" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{NUM_INTERNO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="101" width="65" height="12" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[N° INTERNO      :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="113" width="65" height="12" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TARIFA              :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="71" y="113" width="83" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[new java.text.DecimalFormat($P{SIMBOLO_MONEDA}+" #,##0.00").format(Double.valueOf($F{VALOR_TARIFA}))]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="125" width="65" height="12" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NUM VUELTAS :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="71" y="125" width="35" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{CANTIDAD_VUELTAS_LIQUIDADAS}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="137" width="65" height="12" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PAS. CONTADOR  :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="71" y="137" width="35" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[($F{TOTAL_PASAJEROS_LIQUIDADOS} + $F{PASAJEROS_DESCONTADOS})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="77" width="65" height="12" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[CONDUCTOR    :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="71" y="41" width="51" height="12" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{PK_LIQUIDACION}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="189" width="172" height="12" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DESCUENTOS]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="202" width="190" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="71" y="149" width="35" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{PASAJEROS_DESCONTADOS}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="149" width="65" height="12" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PAS. DSCNTDOS:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="108" y="149" width="37" height="12" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PAS LIQ: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="147" y="149" width="35" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{TOTAL_PASAJEROS_LIQUIDADOS}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="41" width="65" height="12" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONSECUTIVO :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="110" y="128" width="36" height="10" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[IPK]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="144" y="128" width="34" height="10"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[new java.text.DecimalFormat(" #,###0.00").format(Double.valueOf($F{IPK}))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="147" y="138" width="35" height="11"/>
+				<textElement textAlignment="Justified" verticalAlignment="Bottom">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[($F{DISTANCIA_RECORRIDA})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="109" y="139" width="36" height="10" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[KM.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="162" width="65" height="12" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA INI. LIQ.:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="174" width="65" height="12" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Arial" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA FIN LIQ.:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="71" y="162" width="113" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{FECHA_INICIO_LIQUIDACION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="71" y="174" width="113" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{FECHA_FIN_LIQUIDACION}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="2">
+			<componentElement>
+				<reportElement key="table" style="table" x="4" y="1" width="180" height="1" isPrintWhenDetailOverflows="true"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Dataset_liquidacion_adicional">
+						<datasetParameter name="FK_LIQUIDACION_GENERAL">
+							<datasetParameterExpression><![CDATA[$F{PK_LIQUIDACION_GENERAL}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="SIMBOLO_MONEDA">
+							<datasetParameterExpression><![CDATA[$P{SIMBOLO_MONEDA}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="REPORT_PARAMETERS_MAP">
+							<datasetParameterExpression><![CDATA[]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="82">
+						<jr:columnHeader height="10" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="82" height="10"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Arial" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[DESCRIPCIÓN]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="11" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="82" height="11" isPrintWhenDetailOverflows="true"/>
+								<textElement>
+									<font fontName="Monospaced" size="8" isBold="false"/>
+								</textElement>
+								<textFieldExpression class="java.lang.String"><![CDATA[$F{NOMBRE_CATEGORIA}.toUpperCase()]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="23">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:tableFooter height="0" rowSpan="1"/>
+						<jr:columnHeader height="10" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="23" height="10"/>
+								<textElement textAlignment="Center">
+									<font fontName="Arial" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[PAX.]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter height="0" rowSpan="1"/>
+						<jr:detailCell height="11" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="23" height="11"/>
+								<textElement textAlignment="Center">
+									<font fontName="Monospaced" size="8"/>
+								</textElement>
+								<textFieldExpression class="java.lang.String"><![CDATA[$F{CANTIDAD_PASAJEROS_DESCONTADOS}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="75">
+						<jr:columnHeader height="10" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="75" height="10"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Arial" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[VALOR]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="11" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="75" height="11"/>
+								<textElement textAlignment="Right">
+									<font fontName="Monospaced" size="8" isBold="true" pdfEncoding="Identity-H"/>
+								</textElement>
+								<textFieldExpression class="java.lang.String"><![CDATA[new java.text.DecimalFormat($P{SIMBOLO_MONEDA}+" #,##0.0").format($F{VALOR_DESCUENTO})]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+		<band height="2">
+			<componentElement>
+				<reportElement key="table" style="table" x="4" y="1" width="177" height="1" isPrintWhenDetailOverflows="true"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Dataset_liquidacion_adicional_1">
+						<datasetParameter name="FK_LIQUIDACION_GENERAL">
+							<datasetParameterExpression><![CDATA[$F{PK_LIQUIDACION_GENERAL}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="SIMBOLO_MONEDA">
+							<datasetParameterExpression><![CDATA[$P{SIMBOLO_MONEDA}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="REPORT_PARAMETERS_MAP">
+							<datasetParameterExpression><![CDATA[]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="81">
+						<jr:columnHeader height="12" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="81" height="10"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Arial" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[OTROS ]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="11" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="81" height="11" isPrintWhenDetailOverflows="true"/>
+								<textElement>
+									<font fontName="Monospaced" size="8" isBold="false"/>
+								</textElement>
+								<textFieldExpression class="java.lang.String"><![CDATA[$F{NOMBRE_CATEGORIA}.toUpperCase()]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="103">
+						<jr:columnHeader height="12" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="103" height="10"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Arial" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[ CONCEPTOS]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="11" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="103" height="11"/>
+								<textElement textAlignment="Right">
+									<font fontName="Monospaced" size="8" isBold="true" pdfEncoding="Identity-H"/>
+								</textElement>
+								<textFieldExpression class="java.lang.String"><![CDATA[new java.text.DecimalFormat($P{SIMBOLO_MONEDA}+" #,##0.0").format($F{VALOR_DESCUENTO})]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+	<summary>
+		<band height="233">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="118" y="33" width="70" height="14" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true" isItalic="false" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[new java.text.DecimalFormat($P{SIMBOLO_MONEDA}+" #,##0.0").format(Double.valueOf((($F{TOTAL_PASAJEROS_LIQUIDADOS}) * $F{VALOR_TARIFA}) - $F{TOTAL_VALOR_DESCUENTOS_AL_NETO}))]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement mode="Transparent" x="118" y="48" width="70" height="14" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[new java.text.DecimalFormat($P{SIMBOLO_MONEDA}+" #,##0.0").format(Double.valueOf( $F{TOTAL_VALOR_DESCUENTOS_ADICIONAL}))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="118" y="82" width="70" height="14"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[new java.text.DecimalFormat($P{SIMBOLO_MONEDA}+" #,##0.0").format(Double.valueOf(0 + $F{TOTAL_VALOR_NO_DESCUENTOS}))]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="1" y="117" width="190" height="1" forecolor="#000000"/>
+			</line>
+			<line>
+				<reportElement x="1" y="2" width="190" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="9" y="167" width="37" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CÉDULA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="142" width="32" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FIRMA]]></text>
+			</staticText>
+			<line>
+				<reportElement x="46" y="150" width="137" height="1"/>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="118" y="101" width="70" height="14" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true" isItalic="false" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[new java.text.DecimalFormat($P{SIMBOLO_MONEDA}+" #,##0.0").format(Double.valueOf( (((($F{TOTAL_PASAJEROS_LIQUIDADOS}) * $F{VALOR_TARIFA}) - $F{TOTAL_VALOR_DESCUENTOS_AL_NETO}) - $F{TOTAL_VALOR_DESCUENTOS_ADICIONAL}) - $F{TOTAL_VALOR_NO_DESCUENTOS}))]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement mode="Transparent" x="118" y="4" width="70" height="14" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[new java.text.DecimalFormat($P{SIMBOLO_MONEDA}+" #,##0.0").format(Double.valueOf(($F{TOTAL_PASAJEROS_LIQUIDADOS}) * $F{VALOR_TARIFA}))]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="1" y="33" width="190" height="1" forecolor="#000000"/>
+			</line>
+			<line>
+				<reportElement x="1" y="98" width="190" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement mode="Transparent" x="118" y="18" width="70" height="14" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[new java.text.DecimalFormat($P{SIMBOLO_MONEDA}+" #,##0.0").format(Double.valueOf($F{TOTAL_VALOR_DESCUENTOS_AL_NETO}))]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="1" y="64" width="190" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="118" y="67" width="70" height="14" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true" isItalic="false" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[new java.text.DecimalFormat($P{SIMBOLO_MONEDA}+" #,##0.0").format(Double.valueOf(((($F{TOTAL_PASAJEROS_LIQUIDADOS}) * $F{VALOR_TARIFA}) - $F{TOTAL_VALOR_DESCUENTOS_AL_NETO}) - $F{TOTAL_VALOR_DESCUENTOS_ADICIONAL}))]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="46" y="167" width="133" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{CEDULA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="false">
+				<reportElement x="4" y="199" width="175" height="8" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="Arial" size="4" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Elaborado: "+new java.text.SimpleDateFormat("dd-MM-yyyy").format(new Date())+" "+new java.text.SimpleDateFormat("HH:mm:ss").format(new Date())]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="23" y="206" width="137" height="10"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="5" isBold="false"/>
+				</textElement>
+				<text><![CDATA[REGISDATA WEB V 1.0]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="192" width="185" height="10"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Registel: Información Real Para Soluciones Efectivas!]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="3" y="5" width="119" height="13"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{ETIQUETA8}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="3" y="19" width="119" height="12"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{ETIQUETA2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="2" y="34" width="119" height="13"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{ETIQUETA3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="2" y="48" width="119" height="14"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{ETIQUETA4}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="2" y="82" width="141" height="14"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{ETIQUETA6}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="2" y="101" width="100" height="14"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{ETIQUETA7}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="3" y="66" width="141" height="14"/>
+				<textElement>
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{ETIQUETA5}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

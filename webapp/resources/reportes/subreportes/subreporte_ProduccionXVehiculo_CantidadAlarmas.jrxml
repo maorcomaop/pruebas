@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reporte_ProduccionXVehiculo_SubReport_1_1" language="groovy" pageWidth="70" pageHeight="752" columnWidth="70" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="COLUMN_COLOR" mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" fill="Solid" radius="0" scaleImage="Clip" hAlign="Left" vAlign="Bottom" rotation="None" isBlankWhenNull="true" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded="false">
+		<pen lineWidth="0.0" lineStyle="Solid"/>
+		<box padding="2">
+			<pen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(((Number)$P{ROW_COUNT}).doubleValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#BBD0DC"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="IR_PK" class="java.lang.Integer"/>
+	<parameter name="ROW_COUNT" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT
+IF ((SELECT count(air.CANTIDAD_ALARMA) FROM tbl_alarma_info_regis AS air WHERE
+     air.FK_INFORMACION_REGISTRADORA = $P{IR_PK} AND air.FK_ALARMA IN (5,6,7)) > 0,
+     (SELECT count(air.CANTIDAD_ALARMA) FROM tbl_alarma_info_regis AS air WHERE
+     air.FK_INFORMACION_REGISTRADORA = $P{IR_PK} AND air.FK_ALARMA IN (5,6,7)),
+     0) AS CANTIDAD_ALARMA]]>
+	</queryString>
+	<field name="CANTIDAD_ALARMA" class="java.lang.Long"/>
+	<variable name="CANTIDAD_ALARMA" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{CANTIDAD_ALARMA}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20">
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="0" y="0" width="70" height="20" forecolor="#660000"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{CANTIDAD_ALARMA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

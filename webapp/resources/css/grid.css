@@ -1,0 +1,96 @@
+.panel-default1 {
+    border-color: #000;
+}
+
+.style_tbl_vueltas thead tr th {
+    background-color: green;
+    color: white;
+    font-weight: bold;
+    font-family: Arial, Helvetica;
+}
+
+.style_tbl_descuentos thead tr th {
+    background-color: green;
+    color: white;
+    font-weight: bold;
+    font-family: Arial, Helvetica;
+}
+
+.sinborde {
+    background-color: #fff;
+    border: 0;
+    text-align:right;  
+}
+.descuento{
+    color: #FF0000;    
+}
+
+.total{
+    color: green;    
+    font-weight: bold;
+}
+
+.misEtiquetas{
+    font-size: 12px;
+    font-family: Arial;
+    font-weight: bold;  
+}
+.espacio{
+    padding-right: 200px;
+}
+
+.celda{
+    width: 5%;     
+    height: 30%;
+    border-bottom: solid 1px #000;
+    padding: 0px;
+}
+
+.izq{
+    text-align:left;
+}
+.der{
+    text-align:right;
+}
+
+.liquidacion_modal h5 {
+
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 12px;
+
+}
+
+.liquidacion_modal .nav > li > a {
+    padding: 5px 15px;
+}
+
+.liquidacion_modal .modal-dialog{
+    margin: 5px auto;
+}
+
+.liquidacion_modal .btn-xs{
+    font-size: 11px;
+    line-height: 1.3;
+    border-radius: 0px;
+}
+
+.liquidacion_modal .dropdown-menu{
+    font-size: 13px;
+}
+
+.liquidacion_modal table.dataTable.compact tbody td {
+    padding: 2px;
+}
+
+.liquidacion_modal .modal-lg {
+    width: 75%;
+}
+
+.liquidacion_modal .total_side{
+    padding-right: 3%;
+}
+
+.liquidacion_modal .adicione-categoria {
+    margin-bottom: 3px;
+}

@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reporte_Ruta_SubReport_1" pageWidth="525" pageHeight="752" columnWidth="525" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="2.000000000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="estilo_descripcion">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[]]></conditionExpression>
+			<style forecolor="#FF0033" fontSize="8" isBold="true" isItalic="false"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[]]></conditionExpression>
+			<style forecolor="#FF0033"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FF0033"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[]]></conditionExpression>
+			<style forecolor="#FF0033"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FF0033"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FF0033"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FF0033"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FF0033"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[]]></conditionExpression>
+			<style forecolor="#000000"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="ICON_CHECK" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ICON_UNCHECK" class="java.lang.String"/>
+	<parameter name="FECHA_INICIAL" class="java.util.Date"/>
+	<parameter name="IR_PK" class="java.lang.Integer"/>
+	<parameter name="RUTA_PK" class="java.lang.Integer"/>
+	<parameter name="HORA_SALIDA" class="java.sql.Time"/>
+	<queryString>
+		<![CDATA[SELECT /* base salida */
+  b.NOMBRE AS NOMBRE_PUNTO,
+  ir.NUMERACION_BASE_SALIDA AS NUMERACION,
+  ir.HORA_SALIDA_BASE_SALIDA AS HORA_PLANIFICADA,
+  ir.HORA_SALIDA_BASE_SALIDA AS HORA_REAL_LLEGADA,
+  0 AS MINUTOS_HOLGURA,
+  '-' AS ESTADO,
+  CONCAT('', SEC_TO_TIME(0)) AS DIFERENCIA,
+  TRUE AS LLEGADA_EN_HOLGURA
+FROM tbl_informacion_registradora AS ir
+INNER JOIN tbl_base AS b ON
+  ir.FK_BASE_SALIDA = b.PK_BASE AND b.ESTADO = 1
+WHERE ir.PK_INFORMACION_REGISTRADORA = $P{IR_PK}
+UNION
+SELECT /* puntos de control recorridos */
+  p.NOMBRE AS NOMBRE_PUNTO,
+  pc.NUMERACION AS NUMERACION,
+  SEC_TO_TIME(TIME_TO_SEC($P{HORA_SALIDA}) + rp.PROMEDIO_MINUTOS*60) AS HORA_PLANIFICADA,
+  pc.HORA_PTO_CONTROL AS HORA_REAL_LLEGADA,
+  rp.HOLGURA_MINUTOS AS MINUTOS_HOLGURA,
+  IF (TIME_TO_SEC(pc.HORA_PTO_CONTROL) < TIME_TO_SEC($P{HORA_SALIDA}) + rp.PROMEDIO_MINUTOS*60,
+      'Adelantado',
+      IF (TIME_TO_SEC(pc.HORA_PTO_CONTROL) = TIME_TO_SEC($P{HORA_SALIDA}) + rp.PROMEDIO_MINUTOS*60,
+          'Igual',
+	'Atrasado')) AS ESTADO,
+  IF (TIME_TO_SEC(pc.HORA_PTO_CONTROL) >= TIME_TO_SEC($P{HORA_SALIDA}) + rp.PROMEDIO_MINUTOS*60,
+      CONCAT('', SEC_TO_TIME(TIME_TO_SEC(pc.HORA_PTO_CONTROL) - (TIME_TO_SEC($P{HORA_SALIDA}) + rp.PROMEDIO_MINUTOS*60))),
+      CONCAT('-', SEC_TO_TIME(ABS(TIME_TO_SEC(pc.HORA_PTO_CONTROL) - (TIME_TO_SEC($P{HORA_SALIDA}) + rp.PROMEDIO_MINUTOS*60))))) AS DIFERENCIA,
+  IF (TIME_TO_SEC(pc.HORA_PTO_CONTROL) > TIME_TO_SEC($P{HORA_SALIDA}) + rp.PROMEDIO_MINUTOS*60 + rp.HOLGURA_MINUTOS*60 AND
+      TIME_TO_SEC(pc.HORA_PTO_CONTROL) < TIME_TO_SEC($P{HORA_SALIDA}) + rp.PROMEDIO_MINUTOS*60 + rp.HOLGURA_MINUTOS*60 OR
+      TIME_TO_SEC(pc.HORA_PTO_CONTROL) = TIME_TO_SEC($P{HORA_SALIDA}) + rp.PROMEDIO_MINUTOS*60 + rp.HOLGURA_MINUTOS*60, TRUE, FALSE) AS LLEGADA_EN_HOLGURA
+FROM tbl_punto_control AS pc
+INNER JOIN tbl_ruta_punto AS rp ON
+  pc.FK_PUNTO = rp.FK_PUNTO AND rp.FK_RUTA = $P{RUTA_PK}
+INNER JOIN tbl_punto AS p ON
+  pc.FK_PUNTO = p.PK_PUNTO AND p.ESTADO = 1
+WHERE pc.FK_INFO_REGIS = $P{IR_PK}
+GROUP BY pc.HORA_PTO_CONTROL
+UNION
+SELECT
+  p.NOMBRE AS NOMBRE_PUNTO,
+  0 AS NUMERACION,
+  SEC_TO_TIME(0) AS HORA_PLANIFICADA,
+  SEC_TO_TIME(0) AS HORA_REAL_LLEGADA,
+  0 AS MINUTOS_HOLGURA,
+  '-' AS ESTADO,
+  CONCAT('', SEC_TO_TIME(0)) AS DIFERENCIA,
+  FALSE AS LLEGADA_EN_HOLGURA
+FROM tbl_ruta_punto AS rp
+INNER JOIN tbl_punto AS p ON
+  rp.FK_PUNTO = p.PK_PUNTO AND p.ESTADO = 1
+WHERE rp.FK_RUTA = $P{RUTA_PK} AND
+  rp.FK_PUNTO != 100 AND
+  rp.FK_PUNTO != 101 AND
+  rp.FK_PUNTO NOT IN (
+ SELECT
+  pc.FK_PUNTO
+FROM tbl_punto_control AS pc
+WHERE
+  pc.FK_INFO_REGIS = $P{IR_PK}
+)
+UNION
+SELECT * FROM (
+SELECT /* base llegada */
+  b.NOMBRE AS NOMBRE_PUNTO,
+  ir.NUM_LLEGADA AS NUMERACION,
+  SEC_TO_TIME(TIME_TO_SEC(ir.HORA_SALIDA_BASE_SALIDA) + rp.PROMEDIO_MINUTOS*60) AS HORA_PLANIFICADA,
+  ir.HORA_INGRESO AS HORA_REAL_LLEGADA,
+  rp.HOLGURA_MINUTOS AS MINUTOS_HOLGURA,
+  IF (TIME_TO_SEC(ir.HORA_INGRESO) < TIME_TO_SEC(ir.HORA_SALIDA_BASE_SALIDA) + rp.PROMEDIO_MINUTOS*60,
+      'Adelantado',
+      IF (TIME_TO_SEC(ir.HORA_INGRESO) = TIME_TO_SEC(ir.HORA_SALIDA_BASE_SALIDA) + rp.PROMEDIO_MINUTOS*60,
+          'Igual',
+	'Atrasado')) AS ESTADO,
+  IF (TIME_TO_SEC(ir.HORA_INGRESO) >= TIME_TO_SEC(ir.HORA_SALIDA_BASE_SALIDA) + rp.PROMEDIO_MINUTOS*60,
+      CONCAT('', SEC_TO_TIME(TIME_TO_SEC(ir.HORA_INGRESO) - (TIME_TO_SEC(ir.HORA_SALIDA_BASE_SALIDA) + rp.PROMEDIO_MINUTOS*60))),
+      CONCAT('-', SEC_TO_TIME(ABS(TIME_TO_SEC(ir.HORA_INGRESO) - (TIME_TO_SEC(ir.HORA_SALIDA_BASE_SALIDA) + rp.PROMEDIO_MINUTOS*60))))) AS DIFERENCIA,
+  IF (TIME_TO_SEC(ir.HORA_INGRESO) > TIME_TO_SEC(ir.HORA_SALIDA_BASE_SALIDA) + rp.PROMEDIO_MINUTOS*60 + rp.HOLGURA_MINUTOS*60 AND
+      TIME_TO_SEC(ir.HORA_INGRESO) < TIME_TO_SEC(ir.HORA_SALIDA_BASE_SALIDA) + rp.PROMEDIO_MINUTOS*60 + rp.HOLGURA_MINUTOS*60 OR
+      TIME_TO_SEC(ir.HORA_INGRESO) = TIME_TO_SEC(ir.HORA_SALIDA_BASE_SALIDA) + rp.PROMEDIO_MINUTOS*60 + rp.HOLGURA_MINUTOS*60, TRUE, FALSE) AS LLEGADA_EN_HOLGURA
+FROM tbl_informacion_registradora AS ir
+INNER JOIN tbl_base AS b ON
+  ir.FK_BASE = b.PK_BASE AND b.ESTADO = 1
+INNER JOIN tbl_ruta_punto AS rp ON
+  ir.FK_BASE = rp.FK_BASE AND rp.FK_RUTA = $P{RUTA_PK}
+WHERE ir.PK_INFORMACION_REGISTRADORA = $P{IR_PK}
+ORDER BY rp.PK_RUTA_PUNTO DESC LIMIT 1) AS sub;]]>
+	</queryString>
+	<field name="NOMBRE_PUNTO" class="java.lang.String"/>
+	<field name="NUMERACION" class="java.lang.Integer"/>
+	<field name="HORA_PLANIFICADA" class="java.sql.Time"/>
+	<field name="HORA_REAL_LLEGADA" class="java.sql.Time"/>
+	<field name="MINUTOS_HOLGURA" class="java.lang.Integer"/>
+	<field name="ESTADO" class="java.lang.String"/>
+	<field name="DIFERENCIA" class="java.lang.String"/>
+	<field name="LLEGADA_EN_HOLGURA" class="java.lang.Boolean"/>
+	<columnHeader>
+		<band height="44">
+			<rectangle>
+				<reportElement x="0" y="10" width="151" height="15" backcolor="#00507D">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.0"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="192" y="11" width="139" height="15" backcolor="#00507D">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.0"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement mode="Opaque" x="0" y="23" width="524" height="20" backcolor="#71A9CA">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+			</rectangle>
+			<line>
+				<reportElement x="363" y="23" width="1" height="20">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="191" y="23" width="1" height="20">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="365" y="22" width="57" height="21">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="22" width="59" height="21">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Minutos de holgura]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="141" y="23" width="50" height="20">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Hora planificada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="86" y="23" width="54" height="20">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Numeración]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="9" width="146" height="15" forecolor="#FFFFFF">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[Puntos de Control Descargados]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="471" y="22" width="53" height="21">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Llegada en Holgura]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="205" y="10" width="126" height="15" forecolor="#FFFFFF">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[Puntos de Control Ruta  ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="23" width="84" height="20">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<text><![CDATA[Punto de Control]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="422" y="22" width="49" height="20">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Diferencia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="217" y="23" width="57" height="21">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Hora real de llegada]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="29">
+			<rectangle>
+				<reportElement x="472" y="0" width="51" height="29" backcolor="#E9E9E9"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="estilo_descripcion" mode="Opaque" x="1" y="0" width="85" height="29" backcolor="#E9E9E9"/>
+				<textElement verticalAlignment="Top">
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{NOMBRE_PUNTO}.equals(null) ? "PUNTO NO ENCONTRADO" : $F{NOMBRE_PUNTO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH:mm">
+				<reportElement style="estilo_descripcion" mode="Opaque" x="140" y="0" width="51" height="29" backcolor="#E9E9E9"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<textFieldExpression class="java.sql.Time"><![CDATA[$F{HORA_PLANIFICADA}.equals(null) ? new Date("2000/01/01 00:00:00") : $F{HORA_PLANIFICADA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH:mm">
+				<reportElement style="estilo_descripcion" x="217" y="0" width="57" height="29"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<textFieldExpression class="java.sql.Time"><![CDATA[$F{HORA_REAL_LLEGADA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement style="estilo_descripcion" x="280" y="0" width="59" height="29"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{MINUTOS_HOLGURA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement style="estilo_descripcion" mode="Opaque" x="422" y="0" width="50" height="29" backcolor="#E9E9E9"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DIFERENCIA}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="363" y="0" width="1" height="29"/>
+			</line>
+			<line>
+				<reportElement x="191" y="0" width="1" height="29"/>
+			</line>
+			<textField>
+				<reportElement style="estilo_descripcion" mode="Opaque" x="364" y="0" width="58" height="29" backcolor="#E9E9E9"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ESTADO}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="524" y="0" width="1" height="29"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="1" height="29"/>
+			</line>
+			<image>
+				<reportElement x="495" y="3" width="15" height="24"/>
+				<imageExpression class="java.lang.String"><![CDATA[($F{LLEGADA_EN_HOLGURA}) ? $P{ICON_CHECK} : $P{ICON_UNCHECK}]]></imageExpression>
+			</image>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="estilo_descripcion" mode="Opaque" x="86" y="0" width="54" height="29" backcolor="#E9E9E9"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{NUMERACION}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="30">
+			<line>
+				<reportElement x="0" y="0" width="525" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="308" y="7" width="37" height="14">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Minutos]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="347" y="7" width="177" height="13" backcolor="#71A9CA">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+			</rectangle>
+			<textField pattern="HH:mm">
+				<reportElement x="386" y="7" width="45" height="13">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH:mm">
+				<reportElement x="481" y="7" width="43" height="13">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="347" y="7" width="39" height="13">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[Adelanto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="442" y="7" width="39" height="13">
+					<printWhenExpression><![CDATA[true]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[Atraso]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

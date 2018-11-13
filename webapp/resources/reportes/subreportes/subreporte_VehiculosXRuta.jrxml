@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reporte_VehiculosXRuta_SubReport_1" pageWidth="723" pageHeight="612" orientation="Landscape" columnWidth="723" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.4641000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="COLUMN_COLOR" mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" fill="Solid" radius="0" scaleImage="Clip" hAlign="Left" vAlign="Bottom" rotation="None" isBlankWhenNull="true" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded="false">
+		<pen lineWidth="0.0" lineStyle="Solid"/>
+		<box padding="2">
+			<pen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(((Number)$V{REPORT_COUNT}).doubleValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#BBD0DC"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="FECHA_INICIAL" class="java.util.Date"/>
+	<parameter name="RUTA_PK" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[".\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LISTA_VEHICULOS_PK" class="java.util.List"/>
+	<queryString>
+		<![CDATA[
+SELECT * FROM (
+SELECT
+  ir.NUMERO_VUELTA AS NUMERO_VUELTA,
+  v.PK_VEHICULO AS PK_VEHICULO,
+  v.PLACA AS PLACA,
+  v.NUM_INTERNO AS NUMERO_INTERNO,
+  IF(c.NOMBRE IS NULL, 'NA', LCASE(CONCAT(c.NOMBRE, ' ', c.APELLIDO))) AS CONDUCTOR,
+  ir.HORA_SALIDA_BASE_SALIDA AS HORA_SALIDA,
+  ir.HORA_INGRESO AS HORA_LLEGADA,
+
+  TIME_FORMAT(SEC_TO_TIME(((SELECT rp.PROMEDIO_MINUTOS FROM tbl_ruta_punto rp WHERE rp.FK_RUTA = ir.FK_RUTA AND rp.TIPO = 3 LIMIT 1) + (TIME_TO_SEC(ir.HORA_SALIDA_BASE_SALIDA)/60)) * 60), '%H:%i:%s' ) AS HORA_LLEGADA_PLANEADA,
+
+  TIME_FORMAT(SEC_TO_TIME(ABS((SELECT rp.PROMEDIO_MINUTOS FROM tbl_ruta_punto rp WHERE rp.FK_RUTA = ir.FK_RUTA AND rp.TIPO = 3 LIMIT 1) + (TIME_TO_SEC(ir.HORA_SALIDA_BASE_SALIDA)/60) - (TIME_TO_SEC(ir.HORA_INGRESO)/60))*60), '%H:%i:%s' ) AS DIFERENCIA,
+
+  IF(ir.HORA_INGRESO < SEC_TO_TIME(((SELECT rp.PROMEDIO_MINUTOS FROM tbl_ruta_punto rp WHERE rp.FK_RUTA = ir.FK_RUTA AND rp.TIPO = 3 LIMIT 1) + (TIME_TO_SEC(ir.HORA_SALIDA_BASE_SALIDA)/60)) * 60), '-', ' ') AS SIGNO,
+  (ir.NUM_LLEGADA - ir.NUMERACION_BASE_SALIDA ) AS PASAJEROS
+
+FROM  tbl_informacion_registradora AS ir
+INNER JOIN tbl_vehiculo AS v ON
+  v.PK_VEHICULO = ir.FK_VEHICULO AND v.ESTADO = 1
+LEFT JOIN tbl_conductor AS c ON
+  c.PK_CONDUCTOR = ir.FK_CONDUCTOR AND c.ESTADO = 1
+WHERE
+  ir.FK_RUTA = $P{RUTA_PK} AND
+  (ir.FECHA_INGRESO = $P{FECHA_INICIAL} OR
+   ir.FECHA_SALIDA_BASE_SALIDA = $P{FECHA_INICIAL}) AND
+  ir.ESTADO = 1
+ORDER BY v.PLACA ASC, ir.HORA_SALIDA_BASE_SALIDA ASC) AS s
+WHERE $X{IN, s.PK_VEHICULO, LISTA_VEHICULOS_PK}]]>
+	</queryString>
+	<field name="NUMERO_VUELTA" class="java.lang.Integer"/>
+	<field name="PLACA" class="java.lang.String"/>
+	<field name="NUMERO_INTERNO" class="java.lang.String"/>
+	<field name="CONDUCTOR" class="java.lang.String"/>
+	<field name="HORA_SALIDA" class="java.sql.Time"/>
+	<field name="HORA_LLEGADA_PLANEADA" class="java.lang.String"/>
+	<field name="HORA_LLEGADA" class="java.sql.Time"/>
+	<field name="DIFERENCIA" class="java.lang.String"/>
+	<field name="SIGNO" class="java.lang.String"/>
+	<field name="PASAJEROS" class="java.lang.Integer"/>
+	<variable name="TOTAL_PASAJEROS" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{PASAJEROS}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_VUELTAS" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{NUMERO_VUELTA}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<group name="PLACA_COUNT">
+		<groupExpression><![CDATA[$F{PLACA}]]></groupExpression>
+		<groupHeader>
+			<band height="1"/>
+		</groupHeader>
+	</group>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement style="COLUMN_COLOR" x="0" y="0" width="59" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{NUMERO_INTERNO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="COLUMN_COLOR" x="58" y="0" width="69" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{PLACA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="COLUMN_COLOR" x="126" y="0" width="64" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{NUMERO_VUELTA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="COLUMN_COLOR" x="189" y="0" width="169" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{CONDUCTOR}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="HH:mm:ss">
+				<reportElement style="COLUMN_COLOR" x="358" y="0" width="54" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{HORA_SALIDA}+ " "]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="HH:mm:ss">
+				<reportElement style="COLUMN_COLOR" x="411" y="0" width="81" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{HORA_LLEGADA_PLANEADA}+ " "]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="HH:mm:ss">
+				<reportElement style="COLUMN_COLOR" x="491" y="0" width="85" height="20"/>
+				<textElement textAlignment="Center">
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression class="java.sql.Time"><![CDATA[$F{HORA_LLEGADA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="COLUMN_COLOR" x="575" y="0" width="85" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{SIGNO}+ " " +$F{DIFERENCIA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="COLUMN_COLOR" x="659" y="0" width="64" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{PASAJEROS}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

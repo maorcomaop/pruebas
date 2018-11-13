@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reporte_LiquidacionTotalVehiculos_SubReport_1" pageWidth="752" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="200"/>
+	<property name="ireport.y" value="0"/>
+	<style name="COLUMN_COLOR" mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" fill="Solid" radius="0" scaleImage="Clip" hAlign="Left" vAlign="Bottom" rotation="None" isBlankWhenNull="true" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded="false">
+		<pen lineWidth="0.0" lineStyle="Solid"/>
+		<box padding="2">
+			<pen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(((Number)$V{REPORT_COUNT}).doubleValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#BBD0DC"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[".\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FK_TARIFA" class="java.lang.Integer"/>
+	<parameter name="FK_LIQUIDACION_GENERAL" class="java.lang.Integer"/>
+	<parameter name="NO_INTERNO" class="java.lang.String"/>
+	<parameter name="PLACA_VEHICULO" class="java.lang.String"/>
+	<parameter name="LIQUIDADOR" class="java.lang.String"/>
+	<parameter name="SIMBOLO_MONEDA" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["$"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT ir.FECHA_INGRESO AS FECHA_VUELTA, ir.HORA_INGRESO AS HORA_VUELTA, lv.FECHA_DESCUENTO, ir.NUMERO_VUELTA, (ir.NUM_LLEGADA - ir.NUMERACION_BASE_SALIDA  ) AS PASAJEROS_REGISTRADOS, lv.PASAJEROS_DESCUENTO AS PASAJEROS_DESCONTADOS,(ir.NUM_LLEGADA - ir.NUMERACION_BASE_SALIDA - lv.PASAJEROS_DESCUENTO) AS TOTAL_PASAJEROS, IFNULL((SELECT VALOR_TARIFA FROM tbl_tarifa_fija WHERE PK_TARIFA_FIJA = $P{FK_TARIFA}) * (ir.NUM_LLEGADA - ir.NUMERACION_BASE_SALIDA - lv.PASAJEROS_DESCUENTO) , 0) AS TOTAL_LIQUIDACION_VUELTA
+
+FROM tbl_liquidacion_vueltas lv INNER JOIN tbl_informacion_registradora ir ON lv.FK_INFORMACION_REGISTRADORA = ir.PK_INFORMACION_REGISTRADORA
+
+WHERE lv.FK_LIQUIDACION_GENERAL = $P{FK_LIQUIDACION_GENERAL} AND lv.ESTADO = 1
+
+ORDER BY ir.FECHA_INGRESO, ir.HORA_INGRESO asc;]]>
+	</queryString>
+	<field name="FECHA_VUELTA" class="java.sql.Date"/>
+	<field name="HORA_VUELTA" class="java.sql.Time"/>
+	<field name="FECHA_DESCUENTO" class="java.sql.Timestamp"/>
+	<field name="NUMERO_VUELTA" class="java.lang.Integer"/>
+	<field name="PASAJEROS_REGISTRADOS" class="java.lang.Integer"/>
+	<field name="PASAJEROS_DESCONTADOS" class="java.lang.Integer"/>
+	<field name="TOTAL_PASAJEROS" class="java.lang.Long"/>
+	<field name="TOTAL_LIQUIDACION_VUELTA" class="java.lang.Double"/>
+	<variable name="TOTAL_PASAJEROS" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL_PASAJEROS}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_LIQUIDACION" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL_LIQUIDACION_VUELTA}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_VUELTAS" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{NUMERO_VUELTA}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_PASAJEROS_REGISTRADOS" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{PASAJEROS_REGISTRADOS}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_PASAJEROS_DESCONTADOS" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{PASAJEROS_DESCONTADOS}]]></variableExpression>
+	</variable>
+	<variable name="NUM_VUELTA_CONT" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{NUMERO_VUELTA}]]></variableExpression>
+	</variable>
+	<group name="tbl_informacion_registradora_LIQUIDACION">
+		<groupExpression><![CDATA[]]></groupExpression>
+	</group>
+	<pageHeader>
+		<band height="18">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="752" height="18" forecolor="#FFFFFF" backcolor="#00507D"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="82" y="0" width="91" height="18" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isItalic="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[""+$P{NO_INTERNO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="260" y="0" width="100" height="18" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isItalic="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{PLACA_VEHICULO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="474" y="0" width="278" height="18" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isItalic="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{LIQUIDADOR}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="15" y="0" width="65" height="18" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[ID INTERNO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="217" y="0" width="41" height="18" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[PLACA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="399" y="0" width="75" height="18" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[LIQUIDADOR:]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20">
+			<rectangle>
+				<reportElement mode="Opaque" x="15" y="4" width="724" height="15" backcolor="#3B789B"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="15" y="3" width="141" height="16" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha/Hora Vuelta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="157" y="3" width="144" height="16" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha/Hora Generación]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="301" y="3" width="80" height="16" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vuelta Liquidada]]></text>
+			</staticText>
+			<line>
+				<reportElement x="156" y="2" width="1" height="18"/>
+				<graphicElement>
+					<pen lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="299" y="2" width="1" height="18"/>
+				<graphicElement>
+					<pen lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="382" y="3" width="1" height="16"/>
+				<graphicElement>
+					<pen lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="469" y="3" width="82" height="16" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[P. Descontados]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="384" y="3" width="82" height="16" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[P. Registrados]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="553" y="3" width="80" height="16" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Pasajeros]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="635" y="3" width="104" height="16" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Liquidación]]></text>
+			</staticText>
+			<line>
+				<reportElement x="634" y="2" width="1" height="18"/>
+				<graphicElement>
+					<pen lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="467" y="4" width="1" height="16"/>
+				<graphicElement>
+					<pen lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="552" y="4" width="1" height="16"/>
+				<graphicElement>
+					<pen lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement style="COLUMN_COLOR" x="15" y="0" width="141" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{FECHA_VUELTA})+ " " + new SimpleDateFormat("hh:mm: a").format($F{HORA_VUELTA})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="COLUMN_COLOR" x="300" y="0" width="81" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{NUM_VUELTA_CONT}.toString()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="$ #,##0">
+				<reportElement style="COLUMN_COLOR" x="635" y="0" width="103" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[new java.text.DecimalFormat($P{SIMBOLO_MONEDA}+" #,##0.00").format(Double.valueOf($F{TOTAL_LIQUIDACION_VUELTA}))]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="COLUMN_COLOR" x="553" y="0" width="81" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{TOTAL_PASAJEROS}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy h.mm a" isBlankWhenNull="true">
+				<reportElement style="COLUMN_COLOR" x="157" y="0" width="142" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{FECHA_DESCUENTO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0">
+				<reportElement style="COLUMN_COLOR" x="468" y="0" width="84" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{PASAJEROS_DESCONTADOS}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="COLUMN_COLOR" x="382" y="0" width="85" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{PASAJEROS_REGISTRADOS}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="20">
+			<line>
+				<reportElement x="299" y="0" width="439" height="1"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Double" lineColor="#00507D"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="117" y="1" width="182" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[SUBTOTAL:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="$ #,##0">
+				<reportElement style="COLUMN_COLOR" x="635" y="1" width="103" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[new java.text.DecimalFormat($P{SIMBOLO_MONEDA}+" #,##0.00").format(Double.valueOf($V{TOTAL_LIQUIDACION}))]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="COLUMN_COLOR" x="300" y="1" width="81" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{TOTAL_VUELTAS}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="COLUMN_COLOR" x="553" y="1" width="81" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{TOTAL_PASAJEROS}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0">
+				<reportElement style="COLUMN_COLOR" x="468" y="1" width="84" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{TOTAL_PASAJEROS_DESCONTADOS}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="COLUMN_COLOR" x="382" y="1" width="85" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{TOTAL_PASAJEROS_REGISTRADOS}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

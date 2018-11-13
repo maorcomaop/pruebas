@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteComparacionProduccionRuta_SubReport_2" language="groovy" pageWidth="297" pageHeight="752" columnWidth="297" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="3.8974342000000037"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="COLUMN_COLOR" mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" fill="Solid" radius="0" scaleImage="Clip" hAlign="Left" vAlign="Bottom" rotation="None" isBlankWhenNull="true" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded="false">
+		<pen lineWidth="0.0" lineStyle="Solid"/>
+		<box padding="2">
+			<pen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(((Number)$V{REPORT_COUNT}).doubleValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#BBD0DC"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="FECHA_INICIAL" class="java.util.Date"/>
+	<parameter name="FECHA_FINAL" class="java.util.Date"/>
+	<parameter name="LISTA_RUTAS_PK" class="java.util.List"/>
+	<queryString>
+		<![CDATA[SELECT
+  r.NOMBRE AS NOMBRE_RUTA,
+  sum((ir.NUM_LLEGADA - ir.NUMERACION_BASE_SALIDA)) AS CANTIDAD_PASAJEROS
+FROM tbl_informacion_registradora AS ir
+INNER JOIN tbl_ruta AS r ON
+  ir.FK_RUTA = r.PK_RUTA
+WHERE ir.FECHA_INGRESO BETWEEN $P{FECHA_INICIAL} AND $P{FECHA_FINAL}
+AND $X{IN, ir.FK_RUTA, LISTA_RUTAS_PK}
+GROUP BY ir.FK_RUTA
+ORDER BY r.NOMBRE ASC]]>
+	</queryString>
+	<field name="NOMBRE_RUTA" class="java.lang.String"/>
+	<field name="CANTIDAD_PASAJEROS" class="java.lang.Integer"/>
+	<pageHeader>
+		<band height="30">
+			<rectangle>
+				<reportElement x="1" y="13" width="296" height="17" backcolor="#00CC66"/>
+				<graphicElement>
+					<pen lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="14" width="297" height="15" forecolor="#FFFFFF" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Consolidado por ruta]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="18">
+			<rectangle>
+				<reportElement x="1" y="2" width="296" height="16" backcolor="#00507D"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="1" y="3" width="149" height="15" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ruta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="150" y="3" width="147" height="15" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Pasajeros]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="19">
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="1" y="0" width="149" height="18"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{NOMBRE_RUTA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="150" y="0" width="147" height="18"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{CANTIDAD_PASAJEROS}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

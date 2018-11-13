@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RportePorTarifa" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_TITLE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_LOGO" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\logo.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_SUBTITLE" class="java.lang.String"/>
+	<parameter name="NAME_BASE" class="java.lang.String"/>
+	<parameter name="REPORT_ICON" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\icon.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_ICON_TITLE" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\titulo.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_FOOTER" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\footer.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_EMPRESA_NAME" class="java.lang.String"/>
+	<parameter name="REPORT_EMPRESA_NIT" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["subreportes\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="USUARIO_PK" class="java.lang.Integer"/>
+	<parameter name="EMPRESA_PK" class="java.lang.Integer"/>
+	<parameter name="ICON_VC" class="java.lang.String"/>
+	<parameter name="ICON_CONDUCTOR" class="java.lang.String"/>
+	<parameter name="ICON_RUTA" class="java.lang.String"/>
+	<parameter name="ICON_TARIFA" class="java.lang.String"/>
+	<parameter name="ICON_VEHICULO" class="java.lang.String"/>
+	<parameter name="FECHA_IMPRESION" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT 1 AS INICIO]]>
+	</queryString>
+	<field name="INICIO" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="85" splitType="Stretch">
+			<rectangle>
+				<reportElement x="1" y="62" width="572" height="20" backcolor="#00507D"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="0" y="25" width="256" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_EMPRESA_NIT}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="325" y="2" width="247" height="58"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{REPORT_LOGO}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="0" y="5" width="260" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_EMPRESA_NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="62" width="179" height="20" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Regisdata Transporte Online]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="67" splitType="Stretch">
+			<rectangle>
+				<reportElement x="401" y="3" width="168" height="17" backcolor="#00507D"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="401" y="19" width="168" height="20"/>
+				<graphicElement>
+					<pen lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="406" y="4" width="160" height="15" forecolor="#FFFFFF"/>
+				<textElement/>
+				<text><![CDATA[Fecha Impresión Reporte]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="4" y="41" width="563" height="20"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_SUBTITLE}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="-2" y="62" width="572" height="1"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineColor="#AEAEAE"/>
+				</graphicElement>
+			</line>
+			<image>
+				<reportElement x="1" y="1" width="381" height="40"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{REPORT_ICON_TITLE}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="13" y="4" width="359" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_TITLE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="406" y="19" width="159" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{FECHA_IMPRESION}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="22">
+			<rectangle>
+				<reportElement x="0" y="6" width="72" height="15" backcolor="#00507D"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="80" y="6" width="486" height="15" forecolor="#000000"/>
+				<textElement>
+					<font isBold="true"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_EMPRESA_NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="6" width="68" height="15" forecolor="#FFFFFF"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMPRESA]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16">
+			<subreport>
+				<reportElement positionType="Float" x="0" y="1" width="572" height="3"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="USUARIO_PK">
+					<subreportParameterExpression><![CDATA[$P{USUARIO_PK}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="EMPRESA_PK">
+					<subreportParameterExpression><![CDATA[$P{EMPRESA_PK}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ICON_RUTA">
+					<subreportParameterExpression><![CDATA[$P{ICON_RUTA}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "subreporte_Estadisticas_Ruta.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement positionType="Float" x="0" y="4" width="572" height="3"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="USUARIO_PK">
+					<subreportParameterExpression><![CDATA[$P{USUARIO_PK}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="EMPRESA_PK">
+					<subreportParameterExpression><![CDATA[$P{EMPRESA_PK}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ICON_VEHICULO">
+					<subreportParameterExpression><![CDATA[$P{ICON_VEHICULO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "subreporte_Estadisticas_Vehiculo.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement positionType="Float" x="0" y="7" width="572" height="3"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="USUARIO_PK">
+					<subreportParameterExpression><![CDATA[$P{USUARIO_PK}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="EMPRESA_PK">
+					<subreportParameterExpression><![CDATA[$P{EMPRESA_PK}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ICON_CONDUCTOR">
+					<subreportParameterExpression><![CDATA[$P{ICON_CONDUCTOR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "subreporte_Estadisticas_Conductor.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement positionType="Float" x="0" y="10" width="572" height="3"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ICON_TARIFA">
+					<subreportParameterExpression><![CDATA[$P{ICON_TARIFA}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="USUARIO_PK">
+					<subreportParameterExpression><![CDATA[$P{USUARIO_PK}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="EMPRESA_PK">
+					<subreportParameterExpression><![CDATA[$P{EMPRESA_PK}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "subreporte_Estadisticas_Tarifa.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement positionType="Float" x="0" y="13" width="572" height="3"/>
+				<subreportParameter name="EMPRESA_PK">
+					<subreportParameterExpression><![CDATA[$P{EMPRESA_PK}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ICON_VC">
+					<subreportParameterExpression><![CDATA[$P{ICON_VC}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "subreporte_Estadisticas_VehiculoConductor.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="38" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement x="518" y="14" width="49" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="0" y="4" width="572" height="8"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{REPORT_FOOTER}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="450" y="14" width="65" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

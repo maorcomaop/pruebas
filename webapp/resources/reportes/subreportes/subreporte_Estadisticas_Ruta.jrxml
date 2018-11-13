@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteEstadisticas_SubReport_Rutas" pageWidth="366" pageHeight="752" columnWidth="366" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="2.1435888100000025"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="COLUMN_COLOR" mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" fill="Solid" radius="0" scaleImage="Clip" hAlign="Left" vAlign="Bottom" rotation="None" isBlankWhenNull="true" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded="false">
+		<pen lineWidth="0.0" lineStyle="Solid"/>
+		<box padding="2">
+			<pen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(((Number)$V{REPORT_COUNT}).doubleValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#BBD0DC"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="USUARIO_PK" class="java.lang.Integer"/>
+	<parameter name="EMPRESA_PK" class="java.lang.Integer"/>
+	<parameter name="ICON_RUTA" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA[".\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+ r.NOMBRE AS NOMBRE_RUTA,
+ r.ESTADO_CREACION AS ESTADO_CREACION
+FROM
+ tbl_ruta AS r
+WHERE
+ r.ESTADO = 1 AND
+ r.ESTADO_CREACION <> 3 AND
+ r.FK_EMPRESA = $P{EMPRESA_PK}]]>
+	</queryString>
+	<field name="NOMBRE_RUTA" class="java.lang.String"/>
+	<field name="ESTADO_CREACION" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="10"/>
+	</title>
+	<pageHeader>
+		<band height="29">
+			<staticText>
+				<reportElement x="35" y="10" width="213" height="16"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUTAS ESTABLECIDAS]]></text>
+			</staticText>
+			<image scaleImage="FillFrame">
+				<reportElement x="0" y="0" width="32" height="26"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{ICON_RUTA}]]></imageExpression>
+			</image>
+			<line>
+				<reportElement x="0" y="25" width="150" height="1"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineColor="#AEAEAE"/>
+				</graphicElement>
+			</line>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="19" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="1" width="366" height="18" backcolor="#00507D"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="13" y="1" width="166" height="18" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="204" y="1" width="162" height="18" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTADO]]></text>
+			</staticText>
+			<line>
+				<reportElement x="192" y="1" width="1" height="18"/>
+				<graphicElement>
+					<pen lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="0" y="0" width="198" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{NOMBRE_RUTA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="197" y="0" width="169" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[($F{ESTADO_CREACION} == 1) ? "Sin Puntos de Control" : "Ruta Definida"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<lastPageFooter>
+		<band height="1">
+			<line>
+				<reportElement x="0" y="0" width="366" height="1"/>
+			</line>
+		</band>
+	</lastPageFooter>
+</jasperReport>

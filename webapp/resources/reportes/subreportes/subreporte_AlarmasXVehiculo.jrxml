@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subreporte_AlarmasXVehiculo" pageWidth="572" pageHeight="752" whenNoDataType="BlankPage" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="2.357947691000003"/>
+	<property name="ireport.x" value="188"/>
+	<property name="ireport.y" value="0"/>
+	<style name="COLUMN_COLOR" mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" fill="Solid" radius="0" scaleImage="Clip" hAlign="Left" vAlign="Bottom" rotation="None" isBlankWhenNull="true" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded="false">
+		<pen lineWidth="0.0" lineStyle="Solid"/>
+		<box padding="2">
+			<pen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(((Number)$V{REPORT_COUNT}).doubleValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#BBD0DC"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="FECHA_INICIAL" class="java.util.Date"/>
+	<parameter name="FECHA_FINAL" class="java.util.Date"/>
+	<parameter name="VEHICULO_PK" class="java.lang.Integer"/>
+	<parameter name="USUARIO_PK" class="java.lang.Integer"/>
+	<parameter name="IR_PK" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT
+ir.PK_INFORMACION_REGISTRADORA AS IR_PK,
+ir.FK_VEHICULO AS IR_FK_VEHICULO,
+ir.FK_RUTA AS IR_FK_RUTA,
+ir.FK_USUARIO AS IR_FK_USUARIO,
+ir.FK_BASE AS IR_FK_BASE,
+ir.FK_CONDUCTOR AS IR_FK_CONDUCTOR,
+ir.PORCENTAJE_RUTA AS IR_PORCENTAJE_RUTA,
+ir.FECHA_INGRESO AS IR_FECHA_INGRESO,
+ir.HORA_INGRESO AS IR_HORA_INGRESO,
+ir.NUMERO_VUELTA AS IR_NUMERO_VUELTA,
+ir.NUM_VUELTA_ANT AS IR_NUM_VUELTA_ANT,
+ir.NUM_LLEGADA AS IR_NUM_LLEGADA,
+ir.DIFERENCIA_NUM AS IR_DIFERENCIA_NUM,
+ir.ENTRADAS AS IR_ENTRADAS,
+ir.DIFERENCIA_ENTRADA AS IR_DIFERENCIA_ENTRADA,
+ir.SALIDAS AS IR_SALIDAS,
+ir.DIFERENCIA_SALIDA AS IR_DIFERENCIA_SALIDA,
+ir.TOTAL_DIA  AS IR_TOTAL_DIA,
+ir.FK_BASE_SALIDA AS IR_FK_BASE_SALIDA,
+ir.FECHA_SALIDA_BASE_SALIDA AS IR_FECHA_SALIDA_BASE_SALIDA,
+ir.HORA_SALIDA_BASE_SALIDA AS IR_HORA_SALIDA_BASE_SALIDA,
+ir.NUMERACION_BASE_SALIDA AS IR_NUMERACION_BASE_SALIDA,
+ir.ENTRADAS_BASE_SALIDA AS IR_ENTRADAS_BASE_SALIDA,
+ir.SALIDAS_BASE_SALIDA AS IR_SALIDAS_BASE_SALIDA,
+b.NOMBRE AS IR_NOMBRE_BASE,
+bs.NOMBRE AS IR_NOMBRE_BASE_SALIDA,
+IFNULL(r.NOMBRE, 'NA') AS IR_RUTA
+FROM tbl_informacion_registradora AS ir
+LEFT JOIN tbl_ruta AS r ON
+ir.FK_RUTA = r.PK_RUTA AND r.ESTADO = 1
+INNER JOIN tbl_base AS b ON
+ir.FK_BASE = b.PK_BASE AND b.ESTADO = 1
+INNER JOIN tbl_base AS bs ON
+ir.FK_BASE_SALIDA = bs.PK_BASE AND bs.ESTADO = 1
+WHERE ir.PK_INFORMACION_REGISTRADORA = $P{IR_PK}]]>
+	</queryString>
+	<field name="IR_HORA_INGRESO" class="java.sql.Time">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="IR_NUMERO_VUELTA" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="IR_NOMBRE_BASE_SALIDA" class="java.lang.String"/>
+	<field name="IR_NOMBRE_BASE" class="java.lang.String"/>
+	<field name="IR_NUMERACION_BASE_SALIDA" class="java.lang.Integer"/>
+	<field name="IR_NUM_LLEGADA" class="java.lang.Integer"/>
+	<field name="IR_DIFERENCIA_NUM" class="java.lang.Integer"/>
+	<field name="IR_FECHA_SALIDA_BASE_SALIDA" class="java.util.Date"/>
+	<field name="IR_PK" class="java.lang.Integer"/>
+	<field name="IR_RUTA" class="java.lang.String"/>
+	<variable name="TOTAL_ALARMAS" class="java.lang.Integer">
+		<variableExpression><![CDATA[]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="37">
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="0" y="0" width="41" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{IR_NUMERO_VUELTA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH:mm">
+				<reportElement style="COLUMN_COLOR" x="133" y="0" width="48" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.sql.Time"><![CDATA[$F{IR_HORA_INGRESO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="182" y="0" width="104" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{IR_NOMBRE_BASE_SALIDA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="287" y="0" width="104" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{IR_NOMBRE_BASE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="392" y="0" width="55" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{IR_NUMERACION_BASE_SALIDA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="504" y="0" width="67" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{IR_DIFERENCIA_NUM}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="20" width="572" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="572" height="1"/>
+			</line>
+			<subreport>
+				<reportElement x="92" y="26" width="383" height="5"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IR_PK">
+					<subreportParameterExpression><![CDATA[$F{IR_PK}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="FECHA_GENERACION">
+					<subreportParameterExpression><![CDATA[$F{IR_FECHA_SALIDA_BASE_SALIDA}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<returnValue subreportVariable="CANTIDAD_ALARMAS" toVariable="TOTAL_ALARMAS"/>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "subreporte_AlarmasXVehiculo_detalle.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="448" y="0" width="55" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{IR_NUM_LLEGADA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement style="COLUMN_COLOR" x="42" y="0" width="90" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{IR_RUTA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<lastPageFooter>
+		<band height="23">
+			<printWhenExpression><![CDATA[$V{TOTAL_ALARMAS} > 0]]></printWhenExpression>
+			<rectangle>
+				<reportElement x="385" y="5" width="187" height="13" backcolor="#71A9CA"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="391" y="5" width="121" height="13"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Alarmas por vuelta]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="516" y="5" width="52" height="13"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{TOTAL_ALARMAS}]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+</jasperReport>

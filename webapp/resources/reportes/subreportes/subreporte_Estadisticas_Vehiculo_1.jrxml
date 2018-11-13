@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteEstadisticas_SubReport_Vehiculos_1" pageWidth="192" pageHeight="752" whenNoDataType="NoDataSection" columnWidth="192" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="2.357947691000002"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="COLUMN_COLOR" mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" fill="Solid" radius="0" scaleImage="Clip" hAlign="Left" vAlign="Bottom" rotation="None" isBlankWhenNull="true" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded="false">
+		<pen lineWidth="0.0" lineStyle="Solid"/>
+		<box padding="2">
+			<pen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(((Number)$P{ROW}).doubleValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#BBD0DC"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(((Number)$P{ROW}).doubleValue() % 2 != 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#FFFFFF"/>
+		</conditionalStyle>
+	</style>
+	<style name="COLUMN_DIAS" mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" fill="Solid" radius="0" scaleImage="Clip" hAlign="Right" vAlign="Bottom" rotation="None" isBlankWhenNull="true" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded="false">
+		<pen lineWidth="0.0" lineStyle="Solid"/>
+		<box padding="2">
+			<pen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(new java.lang.Boolean(((Number)$P{ROW}).doubleValue() % 2 == 0).booleanValue() && ($F{TIEMPO} >= 10 ))]]></conditionExpression>
+			<style mode="Opaque" forecolor="#990000" backcolor="#BBD0DC" fill="Solid" radius="0" scaleImage="Clip" hAlign="Right" vAlign="Bottom" rotation="None" fontName="Arial" fontSize="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded="false">
+				<pen lineWidth="0.0" lineStyle="Solid"/>
+				<box padding="2">
+					<pen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+			</style>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(new java.lang.Boolean(((Number)$P{ROW}).doubleValue() % 2 == 0).booleanValue() && ($F{TIEMPO} == 0 ))]]></conditionExpression>
+			<style mode="Opaque" forecolor="#006600" backcolor="#BBD0DC" fill="Solid" radius="0" scaleImage="Clip" hAlign="Right" vAlign="Bottom" rotation="None" fontName="Arial" fontSize="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded="false">
+				<pen lineWidth="0.0" lineStyle="Solid"/>
+				<box padding="2">
+					<pen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+			</style>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(new java.lang.Boolean(((Number)$P{ROW}).doubleValue() % 2 != 0).booleanValue() && ($F{TIEMPO} == 0 ))]]></conditionExpression>
+			<style mode="Opaque" forecolor="#006600" backcolor="#FFFFFF" fill="Solid" radius="0" scaleImage="Clip" hAlign="Right" vAlign="Bottom" rotation="None" fontName="Arial" fontSize="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded="false">
+				<pen lineWidth="0.0" lineStyle="Solid"/>
+				<box padding="2">
+					<pen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+			</style>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(new java.lang.Boolean(((Number)$P{ROW}).doubleValue() % 2 != 0).booleanValue() && ($F{TIEMPO} >= 10 ))]]></conditionExpression>
+			<style mode="Opaque" forecolor="#990000" backcolor="#FFFFFF" fill="Solid" radius="0" scaleImage="Clip" hAlign="Right" vAlign="Bottom" rotation="None" fontName="Arial" fontSize="10" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded="false">
+				<pen lineWidth="0.0" lineStyle="Solid"/>
+				<box padding="2">
+					<pen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+			</style>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(((Number)$P{ROW}).doubleValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#BBD0DC"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(((Number)$P{ROW}).doubleValue() % 2 != 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#FFFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="VEHICULO_PK" class="java.lang.Integer"/>
+	<parameter name="ROW" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT
+  ir.FECHA_INGRESO AS FECHA_INGRESO,
+  IFNULL(DATEDIFF(NOW(), ir.FECHA_INGRESO),0) AS TIEMPO
+FROM
+  tbl_informacion_registradora AS ir
+WHERE
+  ir.FK_VEHICULO = $P{VEHICULO_PK}
+ORDER BY ir.FECHA_INGRESO DESC
+LIMIT 1]]>
+	</queryString>
+	<field name="FECHA_INGRESO" class="java.sql.Date"/>
+	<field name="TIEMPO" class="java.lang.Long"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement style="COLUMN_COLOR" x="0" y="0" width="134" height="18"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{FECHA_INGRESO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_DIAS" x="133" y="0" width="59" height="18"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{TIEMPO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

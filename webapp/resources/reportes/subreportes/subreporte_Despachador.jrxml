@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteDespachador_SubReport_1" language="groovy" pageWidth="338" pageHeight="752" columnWidth="338" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="COLUMN_COLOR" mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" fill="Solid" radius="0" scaleImage="Clip" hAlign="Left" vAlign="Bottom" rotation="None" isBlankWhenNull="true" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded="false">
+		<pen lineWidth="0.0" lineStyle="Solid"/>
+		<box padding="2">
+			<pen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(((Number)$V{REPORT_COUNT}).doubleValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#BBD0DC"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(((Number)$V{REPORT_COUNT}).doubleValue() % 2 != 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#FFFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="CHECK" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="UNCHECK" class="java.lang.String"/>
+	<parameter name="TIEMPO_RUTA" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="HORA_SALIDA" class="java.sql.Time"/>
+	<parameter name="HORA_SALIDA_INT" class="java.lang.Integer"/>
+	<parameter name="RUTA_PK" class="java.lang.Integer"/>
+	<parameter name="IR_PK" class="java.lang.Integer"/>
+	<parameter name="FECHA_INICIAL" class="java.util.Date"/>
+	<queryString>
+		<![CDATA[SELECT
+  IF(rp.FK_BASE IS NULL,
+	(SELECT bb.NOMBRE FROM tbl_ruta_punto AS rrp
+	 INNER JOIN tbl_base AS bb ON
+		 rrp.FK_BASE = bb.PK_BASE AND bb.ESTADO = 1
+	 WHERE rrp.ESTADO = 1 AND rrp.FK_RUTA = ir.FK_RUTA AND rrp.FK_PUNTO = 101),
+	b.NOMBRE) AS NOMBRE_PUNTO,
+  IF(rp.FK_BASE IS NULL, FALSE, TRUE) AS PUNTO_EN_VUELTA,
+  IF(rp.PROMEDIO_MINUTOS IS NULL, FALSE,
+     IF(TIME_TO_SEC(ir.HORA_INGRESO) > TIME_TO_SEC($P{HORA_SALIDA}) + rp.PROMEDIO_MINUTOS*60, FALSE, TRUE)) AS ADELANTADO,
+  ir.NUMERACION_BASE_SALIDA AS NUMERACION
+FROM tbl_informacion_registradora AS ir
+INNER JOIN tbl_base AS b ON
+  ir.FK_BASE_SALIDA = b.PK_BASE AND b.ESTADO = 1
+LEFT JOIN tbl_ruta_punto AS rp ON
+  rp.ESTADO = 1 AND
+  rp.FK_RUTA = ir.FK_RUTA AND
+  rp.FK_BASE = ir.FK_BASE_SALIDA AND
+  rp.FK_PUNTO = 101
+WHERE ir.PK_INFORMACION_REGISTRADORA = $P{IR_PK}
+UNION
+SELECT
+  p.NOMBRE AS NOMBRE_PUNTO,
+  TRUE AS PUNTO_EN_VUELTA,
+
+  IF ((SELECT MIN(TIME_TO_SEC(pc.HORA_PTO_CONTROL) - (TIME_TO_SEC($P{HORA_SALIDA}) + rp.PROMEDIO_MINUTOS*60))
+       FROM tbl_ruta_punto AS rp WHERE rp.ESTADO = 1 AND rp.FK_RUTA = $P{RUTA_PK} AND rp.FK_PUNTO = pc.FK_PUNTO) >= 0, FALSE, TRUE) AS ADELANTADO,
+
+  pc.NUMERACION AS NUMERACION
+FROM tbl_punto_control AS pc
+INNER JOIN tbl_punto AS p ON
+  pc.FK_PUNTO = p.PK_PUNTO AND p.ESTADO = 1
+WHERE pc.FK_INFO_REGIS = $P{IR_PK} AND
+  pc.FK_PUNTO IN (
+    SELECT rp.FK_PUNTO FROM tbl_ruta_punto AS rp
+    WHERE rp.FK_RUTA = $P{RUTA_PK} AND rp.ESTADO = 1
+)
+UNION
+SELECT
+  p.NOMBRE AS NOMBRE_PUNTO,
+  FALSE AS PUNTO_EN_VUELTA,
+  FALSE AS ADELANTADO,
+  0 AS NUMERACION
+FROM tbl_ruta_punto AS rp
+INNER JOIN tbl_punto AS p ON
+  rp.FK_PUNTO = p.PK_PUNTO AND p.ESTADO = 1
+WHERE rp.ESTADO = 1 AND
+  rp.FK_RUTA = $P{RUTA_PK} AND
+  rp.FK_PUNTO != 100 AND
+  rp.FK_PUNTO != 101 AND
+  rp.FK_PUNTO NOT IN (
+    SELECT pc.FK_PUNTO FROM tbl_punto_control AS pc
+    WHERE pc.FK_INFO_REGIS = $P{IR_PK}
+)
+UNION
+SELECT
+  IF(rp.FK_BASE IS NULL,
+	(SELECT bb.NOMBRE FROM tbl_ruta_punto AS rrp
+	 INNER JOIN tbl_base AS bb ON
+		 rrp.FK_BASE = bb.PK_BASE AND bb.ESTADO = 1
+	 WHERE rrp.ESTADO = 1 AND rrp.FK_RUTA = ir.FK_RUTA AND rrp.FK_PUNTO = 100),
+	b.NOMBRE) AS NOMBRE_PUNTO,
+  IF(rp.FK_BASE IS NULL, FALSE, TRUE) AS PUNTO_EN_VUELTA,
+  IF(rp.PROMEDIO_MINUTOS IS NULL, FALSE,
+     IF(TIME_TO_SEC(ir.HORA_INGRESO) > TIME_TO_SEC($P{HORA_SALIDA}) + rp.PROMEDIO_MINUTOS*60, FALSE, TRUE)) AS ADELANTADO,
+  ir.NUM_LLEGADA AS NUMERACION
+FROM tbl_informacion_registradora AS ir
+INNER JOIN tbl_base AS b ON
+  ir.FK_BASE = b.PK_BASE AND b.ESTADO = 1
+LEFT JOIN tbl_ruta_punto AS rp ON
+  rp.ESTADO = 1 AND
+  rp.FK_RUTA = ir.FK_RUTA AND
+  rp.FK_BASE = ir.FK_BASE AND
+  rp.FK_PUNTO = 100
+WHERE ir.PK_INFORMACION_REGISTRADORA = $P{IR_PK};]]>
+	</queryString>
+	<field name="NOMBRE_PUNTO" class="java.lang.String"/>
+	<field name="PUNTO_EN_VUELTA" class="java.lang.Boolean"/>
+	<field name="ADELANTADO" class="java.lang.Boolean"/>
+	<field name="NUMERACION" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="18">
+			<rectangle>
+				<reportElement style="COLUMN_COLOR" x="102" y="0" width="142" height="18"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="244" y="0" width="94" height="18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[($F{NUMERACION} == 0) ? "-" : "" + $F{NUMERACION}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="101" y="0" width="1" height="18"/>
+			</line>
+			<image>
+				<reportElement x="138" y="2" width="15" height="15"/>
+				<imageExpression class="java.lang.String"><![CDATA[($F{PUNTO_EN_VUELTA}) ? $P{CHECK} : $P{UNCHECK}]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="208" y="2" width="15" height="15"/>
+				<imageExpression class="java.lang.String"><![CDATA[($F{ADELANTADO}) ? $P{CHECK} : $P{UNCHECK}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="3" y="0" width="98" height="18"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{NOMBRE_PUNTO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="30">
+			<rectangle>
+				<reportElement x="177" y="9" width="161" height="15" backcolor="#71A9CA"/>
+				<graphicElement>
+					<pen lineWidth="1.0"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="177" y="9" width="105" height="15" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[Tiempo Ruta en minutos]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="282" y="9" width="56" height="15" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{TIEMPO_RUTA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

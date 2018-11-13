@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RporteConsolidadoEmpresa" language="groovy" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.8150000000000024"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_TITLE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_LOGO" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\logo.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_SUBTITLE" class="java.lang.String"/>
+	<parameter name="NAME_BASE" class="java.lang.String"/>
+	<parameter name="REPORT_ICON" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\icon.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_ICON_TITLE" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\titulo.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_FOOTER" class="java.lang.String">
+		<defaultValueExpression><![CDATA["plantilla\\footer.png"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_EMPRESA_NAME" class="java.lang.String"/>
+	<parameter name="REPORT_EMPRESA_NIT" class="java.lang.String"/>
+	<parameter name="FECHA_INICIAL" class="java.util.Date"/>
+	<parameter name="FECHA_FINAL" class="java.util.Date"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["subreportes\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="USUARIO_PK" class="java.lang.Integer"/>
+	<parameter name="EMPRESA_PK" class="java.lang.Integer"/>
+	<parameter name="LISTA_RUTAS_PK" class="java.util.List"/>
+	<parameter name="LISTA_VEHICULOS_PK" class="java.util.List"/>
+	<parameter name="FECHA_IMPRESION" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT DISTINCT
+ date(lv.FECHA_DESCUENTO) AS FECHA_LIQUIDACION
+FROM tbl_informacion_registradora AS ir
+INNER JOIN tbl_liquidacion_vueltas AS lv ON
+  ir.PK_INFORMACION_REGISTRADORA = lv.FK_INFORMACION_REGISTRADORA
+WHERE (date(lv.FECHA_DESCUENTO) BETWEEN $P{FECHA_INICIAL} AND $P{FECHA_FINAL})
+AND ($X{IN, ir.FK_RUTA, LISTA_RUTAS_PK} OR ir.FK_RUTA IS NULL)
+AND $X{IN, ir.FK_VEHICULO, LISTA_VEHICULOS_PK}
+AND lv.ESTADO = 1]]>
+	</queryString>
+	<field name="FECHA_LIQUIDACION" class="java.sql.Date"/>
+	<variable name="TOTAL_PASAJEROS_SUMA" class="java.lang.Integer" calculation="Sum">
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="85" splitType="Stretch">
+			<rectangle>
+				<reportElement x="1" y="62" width="750" height="20" backcolor="#00507D"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="0" y="25" width="256" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA["NIT: " + $P{REPORT_EMPRESA_NIT}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="493" y="2" width="258" height="58"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{REPORT_LOGO}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="0" y="5" width="260" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_EMPRESA_NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="62" width="179" height="20" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Regisdata Transporte Online]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="66" splitType="Stretch">
+			<rectangle>
+				<reportElement x="548" y="3" width="170" height="17" backcolor="#00507D"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="548" y="19" width="170" height="20"/>
+				<graphicElement>
+					<pen lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="554" y="4" width="144" height="15" forecolor="#FFFFFF"/>
+				<textElement/>
+				<text><![CDATA[Fecha Impresión Reporte]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="3" y="42" width="563" height="20"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_SUBTITLE}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="-2" y="62" width="753" height="1"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineColor="#AEAEAE"/>
+				</graphicElement>
+			</line>
+			<image>
+				<reportElement x="90" y="4" width="403" height="22"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{REPORT_ICON_TITLE}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="13" y="6" width="480" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_TITLE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="554" y="19" width="161" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{FECHA_IMPRESION}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="24" splitType="Stretch">
+			<rectangle>
+				<reportElement x="270" y="4" width="30" height="15" backcolor="#00507D"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="5" width="60" height="15" backcolor="#00507D"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="6" y="4" width="54" height="16" forecolor="#FFFFFF"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Empresa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="271" y="4" width="29" height="17" forecolor="#FFFFFF"/>
+				<textElement>
+					<font isBold="true"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Nit]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="67" y="4" width="193" height="16" forecolor="#000000"/>
+				<textElement>
+					<font isBold="true"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_EMPRESA_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="304" y="4" width="136" height="16" forecolor="#000000"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_EMPRESA_NIT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="58">
+			<rectangle>
+				<reportElement x="0" y="25" width="752" height="18" backcolor="#00507D"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="7" width="60" height="15" backcolor="#00507D"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#00507D"/>
+				</graphicElement>
+			</rectangle>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="67" y="7" width="100" height="15" forecolor="#000000"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{FECHA_LIQUIDACION}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement key="staticText-20" x="300" y="25" width="27" height="18" forecolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Verdana" size="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[N°Vueltas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-23" x="362" y="25" width="45" height="18" forecolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Verdana" size="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total pasajeros]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-19" x="90" y="25" width="210" height="18" forecolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Verdana" size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Ruta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-18" x="327" y="25" width="35" height="18" forecolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Verdana" size="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Alarmas bloqueo]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="0" y="43" width="752" height="15"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="LISTA_VEHICULOS_PK">
+					<subreportParameterExpression><![CDATA[$P{LISTA_VEHICULOS_PK}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="FECHA">
+					<subreportParameterExpression><![CDATA[$F{FECHA_LIQUIDACION}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="LISTA_RUTAS_PK">
+					<subreportParameterExpression><![CDATA[$P{LISTA_RUTAS_PK}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<returnValue subreportVariable="TOTAL_PASAJEROS" toVariable="TOTAL_PASAJEROS_SUMA" calculation="Sum"/>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "subreporte_GerenciaXVehiculoFusa.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="6" y="7" width="54" height="16" forecolor="#FFFFFF"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-23" x="697" y="25" width="55" height="18" forecolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Verdana" size="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total liquidado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-23" x="407" y="25" width="45" height="18" forecolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Verdana" size="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Pasajeros liquidados]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-19" x="0" y="25" width="45" height="18" forecolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Verdana" size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Placa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-19" x="45" y="25" width="45" height="18" forecolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Verdana" size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[N° interno]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-23" x="557" y="25" width="70" height="18" forecolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Verdana" size="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Dto. operativo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-23" x="627" y="25" width="70" height="18" forecolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Verdana" size="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Dto. administrativo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-23" x="452" y="25" width="55" height="18" forecolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Verdana" size="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Subtotal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-23" x="507" y="25" width="50" height="18" forecolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Verdana" size="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="38" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement x="640" y="14" width="49" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="50" y="4" width="661" height="8"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{REPORT_FOOTER}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="571" y="14" width="65" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="39">
+			<rectangle>
+				<reportElement x="535" y="14" width="194" height="13" backcolor="#00507D"/>
+			</rectangle>
+			<textField>
+				<reportElement x="662" y="13" width="64" height="14" forecolor="#FFFFFF"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{TOTAL_PASAJEROS_SUMA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="537" y="13" width="121" height="13" forecolor="#FFFFFF"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Pasajeros]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

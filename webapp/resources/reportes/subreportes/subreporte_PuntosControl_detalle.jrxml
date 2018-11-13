@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reporte_Puntos_Control_SubRerport_2_1" language="groovy" pageWidth="488" pageHeight="802" columnWidth="488" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="2.200000000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="COLUMN_COLOR" mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" fill="Solid" radius="0" scaleImage="Clip" hAlign="Left" vAlign="Bottom" rotation="None" isBlankWhenNull="true" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded="false">
+		<pen lineWidth="0.0" lineStyle="Solid"/>
+		<box padding="2">
+			<pen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(((Number)$V{REPORT_COUNT}).doubleValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#BBD0DC" fontSize="10"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="IR_PK" class="java.lang.Integer"/>
+	<parameter name="IR_FECHA" class="java.util.Date"/>
+	<parameter name="IR_NUMERACION_SALIDA" class="java.lang.Integer"/>
+	<parameter name="IR_TOTAL_PASAJEROS_REF" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT * FROM (
+	SELECT pc.FK_INFO_REGIS as PC_ID_INFOREG,
+		substr(p.NOMBRE, 1, 30) as PC_PUNTO,
+		pc.FECHA_PTO_CONTROL as PC_FECHA,
+		pc.HORA_PTO_CONTROL as PC_HORA,
+		IF(pc.NUMERACION < 0, 0, pc.NUMERACION) as PC_NUMERACION,
+		pc.ENTRADAS as PC_ENTRADAS,
+		pc.SALIDAS as PC_SALIDAS,
+		0 as PC_ALARMAS,
+		(pc.NUMERACION - ir.NUMERACION_BASE_SALIDA) as PC_PASAJEROS
+		FROM tbl_punto_control as pc
+		INNER JOIN tbl_punto as p ON
+			pc.FK_PUNTO = p.PK_PUNTO
+		INNER JOIN tbl_informacion_registradora as ir ON
+			pc.FK_INFO_REGIS = ir.PK_INFORMACION_REGISTRADORA
+		WHERE pc.FK_INFO_REGIS = $P{IR_PK}
+UNION
+SELECT
+  air.FK_INFORMACION_REGISTRADORA as PC_ID_INFOREG,
+  substr(concat('* ', a.NOMBRE), 1, 30) as PC_NOMBRE,
+  air.FECHA_ALARMA as PC_FECHA,
+  air.HORA_ALARMA as PC_HORA,
+  -1 as PC_NUMERACION,
+  -1 as PC_ENTRADAS,
+  -1 as PC_SALIDAS,
+  -1 as PC_PASAJEROS,
+  air.CANTIDAD_ALARMA as PC_ALARMAS
+FROM tbl_alarma_info_regis as air
+INNER JOIN tbl_alarma as a ON
+  air.FK_ALARMA = a.PK_ALARMA AND
+  air.FK_ALARMA IN (5,6,7)
+WHERE
+  air.FK_INFORMACION_REGISTRADORA = $P{IR_PK} AND
+  air.FECHA_ALARMA = $P{IR_FECHA}
+) as recorrido
+ORDER BY recorrido.PC_HORA asc]]>
+	</queryString>
+	<field name="PC_ID_INFOREG" class="java.lang.Integer"/>
+	<field name="PC_PUNTO" class="java.lang.String"/>
+	<field name="PC_FECHA" class="java.sql.Date"/>
+	<field name="PC_HORA" class="java.sql.Time"/>
+	<field name="PC_NUMERACION" class="java.lang.Long"/>
+	<field name="PC_ENTRADAS" class="java.lang.Long"/>
+	<field name="PC_SALIDAS" class="java.lang.Long"/>
+	<field name="PC_ALARMAS" class="java.lang.Long"/>
+	<field name="PC_PASAJEROS" class="java.lang.Long"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement style="COLUMN_COLOR" x="0" y="0" width="160" height="16"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="false"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{PC_PUNTO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH:mm">
+				<reportElement style="COLUMN_COLOR" x="222" y="0" width="36" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="9"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression class="java.sql.Time"><![CDATA[$F{PC_HORA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement style="COLUMN_COLOR" x="161" y="0" width="60" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{PC_FECHA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="259" y="0" width="69" height="16"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[($F{PC_NUMERACION} == -1) ? "*" : $F{PC_NUMERACION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="329" y="0" width="80" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[($F{PC_PASAJEROS} == -1) ? "*" : $F{PC_PASAJEROS}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="160" y="0" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement x="221" y="0" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement x="258" y="0" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement x="328" y="0" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement x="407" y="0" width="1" height="16"/>
+			</line>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="409" y="0" width="79" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[($F{PC_ALARMAS} < 0)
+    ? $F{PC_ALARMAS} * -1
+    : $F{PC_ALARMAS}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<lastPageFooter>
+		<band height="1">
+			<line>
+				<reportElement x="0" y="0" width="488" height="1"/>
+			</line>
+		</band>
+	</lastPageFooter>
+</jasperReport>

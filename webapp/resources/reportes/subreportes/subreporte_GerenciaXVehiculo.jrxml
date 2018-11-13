@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reporte_Consolidado_Empresa_SubReport_1" language="groovy" pageWidth="572" pageHeight="752" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="2.9282000000000017"/>
+	<property name="ireport.x" value="466"/>
+	<property name="ireport.y" value="0"/>
+	<style name="COLUMN_COLOR" mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" fill="Solid" radius="0" scaleImage="Clip" hAlign="Left" vAlign="Bottom" rotation="None" isBlankWhenNull="true" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded="false">
+		<pen lineWidth="0.0" lineStyle="Solid"/>
+		<box padding="2">
+			<pen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(((Number)$V{REPORT_COUNT}).doubleValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#BBD0DC"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="FECHA" class="java.util.Date"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[".\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LISTA_RUTAS_PK" class="java.util.List"/>
+	<parameter name="LISTA_VEHICULOS_PK" class="java.util.List"/>
+	<queryString>
+		<![CDATA[select
+	date(lv.FECHA_DESCUENTO) as FECHA,
+	time(lv.FECHA_DESCUENTO) as HORA,
+	ifnull((select v.PLACA from tbl_vehiculo as v where v.PK_VEHICULO = ir.FK_VEHICULO and v.ESTADO = 1), 'NA') as PLACA,
+	ifnull((select v.NUM_INTERNO from tbl_vehiculo as v where v.PK_VEHICULO = ir.FK_VEHICULO and v.ESTADO = 1), 'NA') as NUMERO_INTERNO,
+
+	ifnull((select r.NOMBRE
+		from tbl_informacion_registradora as iir
+		inner join tbl_ruta as r on
+		  r.PK_RUTA = iir.FK_RUTA and r.ESTADO = 1
+		where iir.FK_VEHICULO = ir.FK_VEHICULO and iir.FECHA_INGRESO = ir.FECHA_INGRESO
+		order by iir.PORCENTAJE_RUTA desc limit 1), 'NA') as NOMBRE_RUTA,
+
+	ifnull((select r.PK_RUTA
+		from tbl_informacion_registradora as iir
+		inner join tbl_ruta as r on
+		  r.PK_RUTA = iir.FK_RUTA and r.ESTADO = 1
+		where iir.FK_VEHICULO = ir.FK_VEHICULO and iir.FECHA_INGRESO = ir.FECHA_INGRESO
+		order by iir.PORCENTAJE_RUTA desc limit 1), 0) as FK_RUTA,
+
+	(select count(air.PK_AIR) from tbl_alarma_info_regis as air where
+       		air.FK_INFORMACION_REGISTRADORA = ir.PK_INFORMACION_REGISTRADORA and
+		air.FK_ALARMA in (5,6,7)) as CANTIDAD_ALARMAS,
+
+	(select count(iir.PK_INFORMACION_REGISTRADORA) from tbl_informacion_registradora as iir
+		where iir.PK_INFORMACION_REGISTRADORA in (
+			select ilv.FK_INFORMACION_REGISTRADORA from tbl_liquidacion_vueltas as ilv
+			where ilv.FK_LIQUIDACION_GENERAL = lv.FK_LIQUIDACION_GENERAL and lv.ESTADO = 1
+		)) as CANTIDAD_VUELTAS,
+
+	(select sum(iir.NUM_LLEGADA - iir.NUMERACION_BASE_SALIDA) from tbl_informacion_registradora as iir
+		where iir.PK_INFORMACION_REGISTRADORA in (
+			select ilv.FK_INFORMACION_REGISTRADORA from tbl_liquidacion_vueltas as ilv
+			where ilv.FK_LIQUIDACION_GENERAL = lv.FK_LIQUIDACION_GENERAL and lv.ESTADO = 1
+		)) as CANTIDAD_PASAJEROS,
+
+	(select sum(la.CANTIDAD_PASAJEROS_DESCONTADOS) from tbl_liquidacion_adicional as la
+		where lv.FK_LIQUIDACION_GENERAL = la.FK_LIQUIDACION_GENERAL) as PASAJEROS_DESCONTADOS,
+
+	(select lg.TOTAL_PASAJEROS_LIQUIDADOS from tbl_liquidacion_general as lg
+		where lv.FK_LIQUIDACION_GENERAL = lg.PK_LIQUIDACION_GENERAL) as PASAJEROS_LIQUIDADOS,
+
+	(select lg.TOTAL_VALOR_VUELTAS from tbl_liquidacion_general as lg
+		where lv.FK_LIQUIDACION_GENERAL = lg.PK_LIQUIDACION_GENERAL) -
+	(select sum(la.VALOR_DESCUENTO) from tbl_liquidacion_adicional as la
+		where lv.FK_LIQUIDACION_GENERAL = la.FK_LIQUIDACION_GENERAL) as VALOR_LIQUIDADO,
+
+	(select lg.TOTAL_VALOR_VUELTAS from tbl_liquidacion_general as lg
+		where lv.FK_LIQUIDACION_GENERAL = lg.PK_LIQUIDACION_GENERAL) as TOTAL_BRUTO,
+
+	(select lg.TOTAL_VALOR_DESCUENTOS_ADICIONAL from tbl_liquidacion_general as lg
+		where lv.FK_LIQUIDACION_GENERAL = lg.PK_LIQUIDACION_GENERAL) as TOTAL_DESCUENTO_OPERATIVO,
+
+	(select sum(la.VALOR_DESCUENTO) from tbl_liquidacion_adicional as la
+		inner join tbl_categoria_descuento as cd on
+		la.FK_CATEGORIAS = cd.PK_CATEGORIAS_DESCUENTOS and cd.APLICA_GENERAL = 1 and cd.ESTADO = 1
+		where lv.FK_LIQUIDACION_GENERAL = la.FK_LIQUIDACION_GENERAL) as TOTAL_DESCUENTO_ADMIN
+
+from tbl_informacion_registradora as ir
+inner join tbl_liquidacion_vueltas as lv on
+     lv.FK_INFORMACION_REGISTRADORA = ir.PK_INFORMACION_REGISTRADORA
+where
+     date(lv.FECHA_DESCUENTO) = $P{FECHA}
+     and $X{IN, ir.FK_VEHICULO, LISTA_VEHICULOS_PK}
+     and ( $X{IN, ir.FK_RUTA, LISTA_RUTAS_PK}
+     or ir.FK_RUTA IS NULL )
+     and lv.ESTADO = 1
+group by lv.FK_LIQUIDACION_GENERAL]]>
+	</queryString>
+	<field name="FECHA" class="java.sql.Date"/>
+	<field name="HORA" class="java.sql.Time"/>
+	<field name="PLACA" class="java.lang.String"/>
+	<field name="NUMERO_INTERNO" class="java.lang.String"/>
+	<field name="NOMBRE_RUTA" class="java.lang.String"/>
+	<field name="FK_RUTA" class="java.lang.Long"/>
+	<field name="CANTIDAD_ALARMAS" class="java.lang.Long"/>
+	<field name="CANTIDAD_VUELTAS" class="java.lang.Long"/>
+	<field name="CANTIDAD_PASAJEROS" class="java.math.BigDecimal"/>
+	<field name="PASAJEROS_DESCONTADOS" class="java.lang.Integer"/>
+	<field name="PASAJEROS_LIQUIDADOS" class="java.math.BigDecimal"/>
+	<field name="VALOR_LIQUIDADO" class="java.lang.Double"/>
+	<field name="TOTAL_BRUTO" class="java.lang.Double"/>
+	<field name="TOTAL_DESCUENTO_OPERATIVO" class="java.lang.Double"/>
+	<field name="TOTAL_DESCUENTO_ADMIN" class="java.lang.Double"/>
+	<variable name="TOTAL_VALOR_LIQUIDADO" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{VALOR_LIQUIDADO}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_PASAJEROS_LIQUIDADOS" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{PASAJEROS_LIQUIDADOS}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_PASAJEROS" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{CANTIDAD_PASAJEROS}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_ALARMAS" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{CANTIDAD_ALARMAS}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_CANTIDAD_VUELTAS" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{CANTIDAD_VUELTAS}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_BRUTO" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL_BRUTO}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_DESCUENTO_OPERATIVO" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL_DESCUENTO_OPERATIVO}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_DESCUENTO_ADMIN" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL_DESCUENTO_ADMIN}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_PASAJEROS_DESCONTADOS" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{PASAJEROS_DESCONTADOS}]]></variableExpression>
+	</variable>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="90" y="0" width="118" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{NOMBRE_RUTA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="208" y="0" width="27" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{CANTIDAD_VUELTAS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="235" y="0" width="28" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{CANTIDAD_ALARMAS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="263" y="0" width="40" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[($F{CANTIDAD_PASAJEROS} == -1)
+ ? $F{PASAJEROS_LIQUIDADOS}
+ : $F{CANTIDAD_PASAJEROS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="303" y="0" width="40" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{PASAJEROS_DESCONTADOS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="343" y="0" width="45" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{PASAJEROS_LIQUIDADOS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="527" y="0" width="45" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{VALOR_LIQUIDADO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="0" y="0" width="45" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{PLACA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="45" y="0" width="45" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{NUMERO_INTERNO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="388" y="0" width="45" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{TOTAL_BRUTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="433" y="0" width="46" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{TOTAL_DESCUENTO_OPERATIVO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="479" y="0" width="48" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{TOTAL_DESCUENTO_ADMIN}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<lastPageFooter>
+		<band height="29">
+			<rectangle>
+				<reportElement x="0" y="9" width="572" height="18" backcolor="#E4F7E4"/>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="235" y="9" width="28" height="18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{TOTAL_ALARMAS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="263" y="9" width="40" height="18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{TOTAL_PASAJEROS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="303" y="9" width="40" height="18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{TOTAL_PASAJEROS_DESCONTADOS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="343" y="9" width="45" height="18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{TOTAL_PASAJEROS_LIQUIDADOS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="527" y="9" width="45" height="18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{TOTAL_VALOR_LIQUIDADO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="208" y="9" width="27" height="18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{TOTAL_CANTIDAD_VUELTAS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="388" y="9" width="45" height="18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{TOTAL_BRUTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="433" y="9" width="46" height="18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{TOTAL_DESCUENTO_OPERATIVO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="479" y="9" width="48" height="18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{TOTAL_DESCUENTO_ADMIN}]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+</jasperReport>

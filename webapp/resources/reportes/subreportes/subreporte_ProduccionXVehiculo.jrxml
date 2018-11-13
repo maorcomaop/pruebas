@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reporte_ProduccionXVehiculo_SubReport_1" language="groovy" pageWidth="752" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="COLUMN_COLOR" mode="Transparent" forecolor="#000000" backcolor="#FFFFFF" fill="Solid" radius="0" scaleImage="Clip" hAlign="Left" vAlign="Bottom" rotation="None" isBlankWhenNull="true" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded="false">
+		<pen lineWidth="0.0" lineStyle="Solid"/>
+		<box padding="2">
+			<pen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new java.lang.Boolean(((Number)$V{REPORT_COUNT}).doubleValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" backcolor="#BBD0DC"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="FECHA" class="java.util.Date"/>
+	<parameter name="USUARIO_PK" class="java.lang.Integer"/>
+	<parameter name="VEHICULO_PK" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[".\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="EMPRESA_PK" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT
+  ir.FECHA_INGRESO AS tbl_informacion_registradora_FECHA_INGRESO,
+  ir.HORA_INGRESO AS tbl_informacion_registradora_HORA_INGRESO,
+  ir.NUMERO_VUELTA AS tbl_informacion_registradora_NUMERO_VUELTA,
+  ir.NUM_LLEGADA AS tbl_informacion_registradora_NUM_LLEGADA,
+  ir.NUMERACION_BASE_SALIDA AS tbl_informacion_registradora_NUMERACION_BASE_SALIDA,
+  ir.ENTRADAS AS tbl_informacion_registradora_ENTRADAS,
+  ir.SALIDAS AS tbl_informacion_registradora_SALIDAS,
+  ir.TOTAL_DIA AS tbl_informacion_registradora_TOTAL_DIA,
+ (ir.NUM_LLEGADA - ir.NUMERACION_BASE_SALIDA) AS tbl_informacion_registradora_DIFERENCIA_NUM,
+  ir.MODIFICACION_LOCAL AS tbl_informacion_registradora_MODIFICACION_LOCAL,
+  ir.PK_INFORMACION_REGISTRADORA AS tbl_informacion_registradora_PK_INFORMACION_REGISTRADORA,
+  IFNULL((SELECT r.NOMBRE FROM tbl_ruta as r WHERE r.PK_RUTA = ir.FK_RUTA AND r.ESTADO = 1), "NA") AS tbl_ruta_NOMBRE,
+  IFNULL(LCASE(c.NOMBRE), "NA") AS tbl_conductor_NOMBRE,
+  IFNULL(LCASE(c.APELLIDO), "") AS tbl_conductor_APELLIDO,
+  ir.HORA_SALIDA_BASE_SALIDA AS tbl_informacion_registradora_HORA_SALIDA_BASE_SALIDA
+FROM tbl_vehiculo as v
+INNER JOIN tbl_informacion_registradora as ir ON
+  v.PK_VEHICULO = ir.FK_VEHICULO AND v.ESTADO = 1
+INNER JOIN tbl_empresa as e ON
+  v.FK_EMPRESA = e.PK_EMPRESA AND e.ESTADO = 1
+LEFT JOIN tbl_conductor as c ON
+  e.PK_EMPRESA = c.FK_EMPRESA AND
+  c.PK_CONDUCTOR = ir.FK_CONDUCTOR AND
+  c.ESTADO = 1
+WHERE
+  v.PK_VEHICULO = $P{VEHICULO_PK}
+  AND ir.FECHA_INGRESO = $P{FECHA}
+  AND e.PK_EMPRESA =$P{EMPRESA_PK}
+GROUP BY
+  ir.HORA_INGRESO]]>
+	</queryString>
+	<field name="tbl_informacion_registradora_FECHA_INGRESO" class="java.sql.Date"/>
+	<field name="tbl_informacion_registradora_HORA_INGRESO" class="java.sql.Time"/>
+	<field name="tbl_informacion_registradora_NUMERO_VUELTA" class="java.lang.Integer"/>
+	<field name="tbl_informacion_registradora_NUM_LLEGADA" class="java.lang.Integer"/>
+	<field name="tbl_informacion_registradora_NUMERACION_BASE_SALIDA" class="java.lang.Integer"/>
+	<field name="tbl_informacion_registradora_ENTRADAS" class="java.lang.Integer"/>
+	<field name="tbl_informacion_registradora_SALIDAS" class="java.lang.Integer"/>
+	<field name="tbl_informacion_registradora_TOTAL_DIA" class="java.lang.Integer"/>
+	<field name="tbl_informacion_registradora_DIFERENCIA_NUM" class="java.lang.Long"/>
+	<field name="tbl_informacion_registradora_MODIFICACION_LOCAL" class="java.lang.Integer"/>
+	<field name="tbl_informacion_registradora_PK_INFORMACION_REGISTRADORA" class="java.lang.Integer"/>
+	<field name="tbl_ruta_NOMBRE" class="java.lang.String"/>
+	<field name="tbl_conductor_NOMBRE" class="java.lang.String"/>
+	<field name="tbl_conductor_APELLIDO" class="java.lang.String"/>
+	<field name="tbl_informacion_registradora_HORA_SALIDA_BASE_SALIDA" class="java.sql.Time"/>
+	<variable name="TOTAL_PASAJEROS" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{tbl_informacion_registradora_DIFERENCIA_NUM}]]></variableExpression>
+	</variable>
+	<variable name="TOTAL_CONTEO_PERIMETRO" class="java.lang.Integer" calculation="Sum"/>
+	<variable name="TOTAL_ALARMAS" class="java.lang.Integer" calculation="Sum"/>
+	<group name="tbl_informacion_registradora_FECHA_INGRESO">
+		<groupExpression><![CDATA[$F{tbl_informacion_registradora_FECHA_INGRESO}]]></groupExpression>
+	</group>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="0" y="0" width="52" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tbl_informacion_registradora_NUMERO_VUELTA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="51" y="0" width="95" height="20"/>
+				<textElement textAlignment="Center">
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tbl_ruta_NOMBRE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH:mm">
+				<reportElement style="COLUMN_COLOR" x="145" y="0" width="59" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tbl_informacion_registradora_HORA_SALIDA_BASE_SALIDA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH:mm">
+				<reportElement style="COLUMN_COLOR" x="203" y="0" width="70" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tbl_informacion_registradora_HORA_INGRESO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="272" y="0" width="49" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tbl_informacion_registradora_NUMERACION_BASE_SALIDA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="320" y="0" width="44" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tbl_informacion_registradora_NUM_LLEGADA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="COLUMN_COLOR" x="550" y="0" width="202" height="20"/>
+				<textElement textAlignment="Center">
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tbl_conductor_NOMBRE} + " " + $F{tbl_conductor_APELLIDO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="COLUMN_COLOR" x="363" y="0" width="60" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tbl_informacion_registradora_DIFERENCIA_NUM}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="421" y="0" width="59" height="20"/>
+				<subreportParameter name="IR_PK">
+					<subreportParameterExpression><![CDATA[$F{tbl_informacion_registradora_PK_INFORMACION_REGISTRADORA}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ROW_COUNT">
+					<subreportParameterExpression><![CDATA[$V{REPORT_COUNT}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<returnValue subreportVariable="CONTEOS" toVariable="TOTAL_CONTEO_PERIMETRO" calculation="Sum"/>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "subreporte_ProduccionXVehiculo_ConteoPerimetro.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="481" y="0" width="70" height="20"/>
+				<subreportParameter name="IR_PK">
+					<subreportParameterExpression><![CDATA[$F{tbl_informacion_registradora_PK_INFORMACION_REGISTRADORA}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ROW_COUNT">
+					<subreportParameterExpression><![CDATA[$V{REPORT_COUNT}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<returnValue subreportVariable="CANTIDAD_ALARMA" toVariable="TOTAL_ALARMAS" calculation="Sum"/>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "subreporte_ProduccionXVehiculo_CantidadAlarmas.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<lastPageFooter>
+		<band height="23">
+			<rectangle>
+				<reportElement x="365" y="7" width="186" height="13" backcolor="#71A9CA"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="260" y="7" width="99" height="13"/>
+				<textElement/>
+				<text><![CDATA[Subtotales del día:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="365" y="7" width="56" height="13"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{TOTAL_PASAJEROS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="421" y="7" width="61" height="13"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{TOTAL_CONTEO_PERIMETRO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="487" y="7" width="59" height="13"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{TOTAL_ALARMAS}]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+</jasperReport>

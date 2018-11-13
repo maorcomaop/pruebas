@@ -1,0 +1,302 @@
+@import url('//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css');
+html, body{
+    /*background-image: url('../img/bga.png');*/
+    background-color: #fafafa;
+}
+
+.alert-danger {
+    background-color: #f6bdb9 !important;    
+}
+
+img{
+    width: 100%;
+}
+img.pequena{
+    width: 200px; 
+    height: 60px;
+    padding-left: 10px;   
+}
+img.mas_pequena {
+    width: 200px;
+    height: 54px;
+    padding-left: 10px;   
+}
+.naviga{
+
+}
+
+.cabeza {
+    /*background-color: rgb(63, 81, 181);*/
+    background-color: steelblue;    
+    border: medium none;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    box-sizing: border-box;
+    /*color: rgb(255, 255, 255);*/
+    display: flex;/*
+    flex-flow: column nowrap;
+    flex-shrink: 0;
+    justify-content: flex-start;
+    margin: 0;
+    max-height: 1000px;
+    min-height: 64px;
+    padding: 0;
+    transition-duration: 0.2s;
+    transition-property: max-height, box-shadow;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+    z-index: 3;*/
+}
+
+.link {
+    color: rgb(255, 255, 255);
+    display: block;
+    line-height: 64px;
+    padding: 0 24px;
+}
+
+.navigation {
+    align-items: center;
+    flex-direction: row;
+    height: 64px;
+    margin: 0;
+    padding: 0;}
+
+
+.navigation1 {
+    align-items: center;
+    align-self: stretch;
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: row nowrap;
+    flex-shrink: 0;
+    height: 64px;
+    margin: 0;
+    padding: 0 40px 0 80px;
+}
+.spacer {
+    flex-grow: 0;
+}
+.navbar a:hover{/*para cambiar el color*/
+    /*border: solid 1px steelblue;*/
+    color: whitesmoke !important;
+    background-color: steelblue !important; 
+}
+.navbar a{/*para cambiar el color*/	
+    color: white;
+
+}
+a.active{
+    background-color: steelblue;
+    /*color: white;*/
+}
+.padding{
+    padding: 5%;
+}
+.padding-min{
+    padding: 10px;
+}
+.padding-smin{
+    padding: 3%;
+}
+.padding-xmin{
+    padding: 4px;
+}
+.no-scroll {
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+input, .input-group{
+    margin-bottom: 2%;
+}
+.tab-pane{
+    background-color: white;
+    border-right: solid 1px lightgray;
+    border-left: solid 1px lightgray;
+    border-bottom: solid 1px lightgray;
+}
+.boxed {
+    /*background-image: url('../img/bg1.png');*/
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    background: #f8f8f8;
+}
+footer{
+    padding-top: 5%;
+    text-align: center;
+}
+/*Menú oculto*/
+.mini-submenu{
+    display:none;  
+    background-color: rgba(0, 0, 0, 0);  
+    border: 1px solid rgba(0, 0, 0, 0.9);
+    border-radius: 4px;
+    padding: 9px;  
+    /*position: relative;*/
+    width: 42px;
+}
+.mini-submenu:hover{
+    cursor: pointer;
+}
+.mini-submenu .icon-bar {
+    border-radius: 1px;
+    display: block;
+    height: 2px;
+    width: 22px;
+    margin-top: 3px;
+}
+.mini-submenu .icon-bar {
+    background-color: #000;
+}
+#slide-submenu{
+    background: rgba(0, 0, 0, 0.45);
+    display: inline-block;
+    padding: 0 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu>.dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -6px;
+    margin-left: -1px;
+    -webkit-border-radius: 0 6px 6px 6px;
+    -moz-border-radius: 0 6px 6px;
+    border-radius: 0 6px 6px 6px;
+}
+
+.dropdown-submenu:hover>.dropdown-menu {
+    display: block;
+}
+
+.dropdown-submenu>a:after {
+    display: block;
+    content: " ";
+    float: right;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #ccc;
+    margin-top: 5px;
+    margin-right: -10px;
+}
+
+.dropdown-submenu:hover>a:after {
+    border-left-color: #fff;
+}
+
+.dropdown-submenu.pull-left {
+    float: none;
+}
+
+.dropdown-submenu.pull-left>.dropdown-menu {
+    left: -100%;
+    margin-left: 10px;
+    -webkit-border-radius: 6px 0 6px 6px;
+    -moz-border-radius: 6px 0 6px 6px;
+    border-radius: 6px 0 6px 6px;
+}
+
+
+.cellEditing input[type=text]{
+    width:50%;
+    border:0;    
+    background-color:#7fffd4;
+}
+
+/***********************************************************************/
+
+.panel-table {
+    display:table;
+}
+.panel-table > .panel-heading {
+    display: table-header-group;
+    background: transparent;
+}
+.panel-table > .panel-body {
+    display: table-row-group;
+}
+.panel-table > .panel-body:before,
+.panel-table > .panel-body:after {
+    content:none;
+}
+.panel-table > .panel-footer {
+    display: table-footer-group;
+    background: transparent;
+}
+.panel-table > div > .tr {
+    display: table-row;
+}
+.panel-table > div:last-child > .tr:last-child > .td {
+    border-bottom: none;
+}
+.panel-table .td {
+    display: table-cell;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-left: none;
+}
+.panel-table .td:last-child {
+    border-right: none;
+}
+.panel-table > .panel-heading > .tr > .td,
+.panel-table > .panel-footer > .tr > .td {
+    background-color: #f5f5f5;
+}
+.panel-table > .panel-heading > .tr > .td:first-child {
+    border-radius: 4px 0 0 0;
+}
+.panel-table > .panel-heading > .tr > .td:last-child {
+    border-radius: 0 4px 0 0;
+}
+.panel-table > .panel-footer > .tr > .td:first-child {
+    border-radius: 0 0 0 4px;
+}
+.panel-table > .panel-footer > .tr > .td:last-child {
+    border-radius: 0 0 4px 0;
+}
+
+/* Estilo mensaje de error para campos : De style1.css */
+.msg-error {
+    font-family: helvetica, arial, sans-serif;
+    font-size: 10px;
+    color: #b22222;
+}
+
+
+
+.list-group-horizontal .list-group-item {
+    display: inline-block;
+}
+.list-group-horizontal .list-group-item {
+    margin-bottom: 0;
+    margin-left:-4px;
+    margin-right: 0;
+}
+.list-group-horizontal .list-group-item:first-child {
+    border-top-right-radius:0;
+    border-bottom-left-radius:4px;
+}
+.list-group-horizontal .list-group-item:last-child {
+    border-top-right-radius:4px;
+    border-bottom-left-radius:0;
+}
+
+
+.free {
+    background: #5cb85c !important;
+    color: #fff !important;    
+}
+
+.full {
+    background: #FF0000 !important;
+    color: #fff !important;    
+}

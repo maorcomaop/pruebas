@@ -1,0 +1,39 @@
+
+DynamicJasper Library
+
+DJ in packaged in a single jar file. download DynamicJasper
+Dependencies
+
+DJ stands on JasperReports (since DJ 3.0.5 JasperReports 3.5 is needed), so you will need these jars too. download Jasper Reports from SourceForge
+
+Note that JasperReports need some other files in order to export the report to pdf, xls (Excel), rtf (MS Word), etc.
+
+Below there is a list for the minimum libraries needed
+Libraries to run DynamicJasper
+
+    * Jakarta Commons BeanUtils Component (version 1.7 or later)
+    * Jakarta Commons Collections Component (version 3.0 or later)
+    * Jakarta Commons Logging Component (version 1.0 or later)
+    * Eclipse jdt-core compiler
+
+Libraries for exporting
+
+    * PDF
+          o iText - Free Java-PDF library by Bruno Lowagie and Paulo Soares (version 1.01 or later) http://www.lowagie.com/iText/
+    * XLS (Only one is needed)
+          o Jakarta POI (version 2.0 or later) http://jakarta.apache.org/poi/
+          o JExcelApi (version 2.5.7 or later) http://jexcelapi.sourceforge.net/
+    * XML
+          o JAXP 1.1 XML Parser
+          o Jakarta Commons Digester Component (version 1.7 or later) http://jakarta.apache.org/commons/digester/
+
+Other Libraries
+
+    * Charts
+          o JFree Charts:
+                + JFree Charts 1.0.9
+                + JCommon 1.0.9
+    * Barcode generation
+          o barbecue 1.1
+
+http://dynamicjasper.sourceforge.net/requeriments.html
